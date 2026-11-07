@@ -1,0 +1,8 @@
+# Источники, реально открытые и прочитанные 2026-11-07
+
+- [S1] https://www.getty.edu/art/exhibitions/19_century_now/explore.html — J. Paul Getty Museum, «Nineteenth-Century Photography Now»; accessed: 2026-11-07; evidence: раздел Identity — студии, атрибуты позирования, обмен портретами; scope: музейный обзор практик XIX века, не статистика населения. Прочитано релевантное описание.
+- [S2] https://www.getty.edu/art/exhibitions/focus_portrait/ — J. Paul Getty Museum, «In Focus: The Portrait», выставка 2009; accessed: 2026-11-07; evidence: коммерциализация 1850-х, cartes-de-visite и обмен карточками; scope: западная портретная фотография, не всеобщая практика. Прочитано релевантное описание.
+- [S3] https://guides.loc.gov/american-women-prints-photographs/business-and-art/professional-photographers — Library of Congress, guide «Professional Photographers from the Post-Daguerreotype Era» (обновлён 2026-05-28); accessed: 2026-11-07; evidence: совместное формирование образа, преобладание среднего класса в выборке, студии; scope: коллекции США, не перепись общества. Прочитано содержание.
+- [S4] https://www.loc.gov/exhibits/civil-war-photographs/photographers-and-their-studios.html — Library of Congress, «Photographers and Their Studios»; accessed: 2026-11-07; evidence: визиты солдат в студию, пересылка портретов семье, характерные фоны; scope: США, Гражданская война, не переносить на другие эпохи. Прочитано содержание выставки.
+
+**Право использования:** статья оригинально пересказывает музейные экспозиционные описания короткими собственными формулировками, не копирует изображения музеев и не воспроизводит развёрнутые цитаты. Визуальный файл сгенерирован в рамках проекта; происхождение и маркировка указаны в `images/manifest.json`.

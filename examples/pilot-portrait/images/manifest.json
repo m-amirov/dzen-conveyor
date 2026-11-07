@@ -1,0 +1,13 @@
+{
+  "images": [
+    {
+      "path": "images/portrait-studio-illustration.webp",
+      "kind": "ai_illustration",
+      "caption": "Иллюстрация, созданная с помощью ИИ: обобщённая сцена фотосъёмки в ателье XIX века. Не архивная фотография и не изображение реальной семьи.",
+      "prompt": "Historical-scene editorial illustration for Люди и время: anonymous three-person family sitting formally for a large 1870s wooden bellows studio camera, partially visible photographer, 19th-century clothing, neutral painted backdrop and upholstered chair, painterly gouache/oil texture, warm paper and terracotta/slate palette, wide 3:2, natural light; no text, logos, archival marks, modern objects or real identifiable people.",
+      "rights": "Original AI-generated artwork using the built-in OpenAI image generation tool; no third-party reference image supplied; review service terms before external commercial reuse.",
+      "checked": true,
+      "historical_check": "PASS"
+    }
+  ]
+}

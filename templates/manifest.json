@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "generation": "fully_ai_generated",
+  "status": "BLOCKED",
+  "title": "",
+  "source_gate": "NOT_RUN",
+  "editorial_gate": "NOT_RUN",
+  "image_gate": "NOT_RUN",
+  "policy_risk_acknowledged": true,
+  "block_reason": "not_started"
+}
