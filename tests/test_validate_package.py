@@ -22,7 +22,7 @@ class PackageContractTests(unittest.TestCase):
         (self.article / "brief.md").write_text("# Сервиз\nИсследовательский вопрос", encoding="utf-8")
         (self.article / "sources.md").write_text(
             "- [S1] https://museum.example/collection — Музей; accessed: 2026-11-07; evidence: описание сервизов; scope: частная коллекция\n"
-            "- [S2] https://archive.example/paper — Архив; accessed: 2026-11-07; evidence: семейный быт; scope: выборка\n",
+            "- [S2] https://archive.example/paper — Архив; accessed: 2026-11-07; evidence: семейный быт; scope: семейная выборка\n",
             encoding="utf-8",
         )
         (self.article / "claims.md").write_text(
@@ -54,9 +54,11 @@ class PackageContractTests(unittest.TestCase):
         }
         self.write_json(images / "manifest.json", self.images_manifest)
         (self.article / "publish.md").write_text(
-            article_text + "\n\n![Обложка](images/cover.png)\n"
-            "Иллюстрация, созданная с помощью ИИ\n"
-            "\nИсточники: https://museum.example/collection; https://archive.example/paper\n"
+            "![Обложка](images/cover.png)\nИллюстрация, созданная с помощью ИИ\n\n"
+            "<!-- APPROVED_ARTICLE_START -->\n" + article_text + "\n<!-- APPROVED_ARTICLE_END -->\n"
+            "## Ссылки на источники\n"
+            "- [S1] [Музей](https://museum.example/collection)\n"
+            "- [S2] [Архив](https://archive.example/paper)\n"
             "\n<!-- DZEN_POLICY_RISK: AI_GENERATED_TEXT -->\n"
             "## Происхождение и ограничения\n"
             "Текст полностью создан с помощью ИИ. Требования Дзена могут запрещать такие тексты, "
@@ -141,11 +143,40 @@ class PackageContractTests(unittest.TestCase):
         )
         self.assertIn("policy: complete visible AI/platform disclosure missing", self.check_errors())
 
+    def test_rejects_disclosure_hidden_in_html_comment(self):
+        path = self.article / "publish.md"
+        original = path.read_text(encoding="utf-8")
+        original = original.replace("## Происхождение и ограничения\n", "<!-- hidden disclosure begins\n## Происхождение и ограничения\n") + "\n-->"
+        path.write_text(original, encoding="utf-8")
+        self.assertIn("policy: complete visible AI/platform disclosure missing", self.check_errors())
+
     def test_rejects_modified_publication_text(self):
         path = self.article / "publish.md"
         text = path.read_text(encoding="utf-8")
         path.write_text(text.replace("В статье исследуется бытовой контекст.", "В статье продаётся дорогой товар."), encoding="utf-8")
         self.assertIn("publish: approved draft content differs", self.check_errors())
+
+    def test_rejects_injected_unreviewed_paragraph(self):
+        path = self.article / "publish.md"
+        path.write_text(
+            path.read_text(encoding="utf-8").replace(
+                "<!-- APPROVED_ARTICLE_END -->",
+                "Рекламный абзац: покупайте секретный товар.\n<!-- APPROVED_ARTICLE_END -->",
+            ),
+            encoding="utf-8",
+        )
+        self.assertIn("publish: approved draft content differs", self.check_errors())
+
+    def test_rejects_injected_unreviewed_source_section(self):
+        path = self.article / "publish.md"
+        path.write_text(
+            path.read_text(encoding="utf-8").replace(
+                "- [S2] [Архив](https://archive.example/paper)",
+                "- [S2] [Архив](https://archive.example/paper)\nПокупайте мой курс!",
+            ),
+            encoding="utf-8",
+        )
+        self.assertIn("publish: unexpected source-section content", self.check_errors())
 
     def test_rejects_missing_image_link_in_publication(self):
         path = self.article / "publish.md"
@@ -158,6 +189,15 @@ class PackageContractTests(unittest.TestCase):
             path.read_text(encoding="utf-8").replace("Иллюстрация, созданная с помощью ИИ", "Старинная фотография"),
             encoding="utf-8",
         )
+        self.assertIn("publish: missing image caption", self.check_errors())
+
+    def test_rejects_fake_visible_caption_with_real_caption_hidden(self):
+        path = self.article / "publish.md"
+        published = path.read_text(encoding="utf-8").replace(
+            "Иллюстрация, созданная с помощью ИИ\n\n<!-- APPROVED_ARTICLE_START -->",
+            "Подлинный снимок из семейного архива\n\n<!-- Иллюстрация, созданная с помощью ИИ -->\n<!-- APPROVED_ARTICLE_START -->",
+        )
+        path.write_text(published, encoding="utf-8")
         self.assertIn("publish: missing image caption", self.check_errors())
 
     def test_rejects_missing_source_link_in_publication(self):
@@ -192,6 +232,14 @@ class PackageContractTests(unittest.TestCase):
             "- [S1] https://a.example/one\n- [S2] https://b.example/two\n", encoding="utf-8"
         )
         self.assertIn("sources: missing evidence metadata", self.check_errors())
+
+    def test_rejects_empty_or_fake_source_metadata(self):
+        (self.article / "sources.md").write_text(
+            "- [S1] https://a.example/one — A; accessed: ; evidence: ; scope: \n"
+            "- [S2] https://b.example/two — B; accessed: oops; evidence: not read; scope: none\n",
+            encoding="utf-8",
+        )
+        self.assertIn("sources: invalid access/evidence metadata", self.check_errors())
 
     def test_rejects_fictional_external_statuses(self):
         self.manifest["publication_status"] = "PUBLISHED"

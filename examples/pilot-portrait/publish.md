@@ -1,8 +1,9 @@
-# Почему семейный фотопортрет когда-то готовили как маленький спектакль
-
 ![Иллюстрация: семья позирует фотографу в ателье XIX века](images/portrait-studio-illustration.webp)
 
 *Иллюстрация, созданная с помощью ИИ: обобщённая сцена фотосъёмки в ателье XIX века. Не архивная фотография и не изображение реальной семьи.*
+
+<!-- APPROVED_ARTICLE_START -->
+# Почему семейный фотопортрет когда-то готовили как маленький спектакль
 
 Представьте студию фотографа во второй половине XIX века. На полу стоит тяжёлая камера, у стены — расписной фон, рядом приготовлено кресло. Человеку предлагают занять место и повернуть голову. Всё это похоже на небольшую сцену, только зритель увидит её позднее — на карточке. Это обобщённая реконструкция, а не описание конкретной сохранившейся фотографии.
 
@@ -34,10 +35,16 @@
 
 В этом и состоит особенность старой семейной карточки: на ней виден один короткий момент, к которому могли готовиться заранее. Он не расскажет нам всего о жизни изображённых людей. Зато расскажет кое-что о том, как люди того времени обращались с собственным образом — и почему хотели сохранить его на бумаге.
 
-**Источники:** [S1] [Музей Гетти, «Nineteenth-Century Photography Now»](https://www.getty.edu/art/exhibitions/19_century_now/explore.html); [S2] [Музей Гетти, «In Focus: The Portrait»](https://www.getty.edu/art/exhibitions/focus_portrait/); [S3] [Библиотека Конгресса США, руководство по профессиональным фотографам](https://guides.loc.gov/american-women-prints-photographs/business-and-art/professional-photographers); [S4] [Библиотека Конгресса США, «Photographers and Their Studios»](https://www.loc.gov/exhibits/civil-war-photographs/photographers-and-their-studios.html).
+**Источники:** [S1] Музей Гетти, «Nineteenth-Century Photography Now»; [S2] Музей Гетти, «In Focus: The Portrait»; [S3] Библиотека Конгресса США, руководство по коллекциям профессиональных фотографов; [S4] Библиотека Конгресса США, «Photographers and Their Studios». Ссылки приведены в `sources.md`.
+
+<!-- APPROVED_ARTICLE_END -->
+## Ссылки на источники
+- [S1] [Музей Гетти: Nineteenth-Century Photography Now](https://www.getty.edu/art/exhibitions/19_century_now/explore.html)
+- [S2] [Музей Гетти: In Focus: The Portrait](https://www.getty.edu/art/exhibitions/focus_portrait/)
+- [S3] [Библиотека Конгресса: профессиональные фотографы](https://guides.loc.gov/american-women-prints-photographs/business-and-art/professional-photographers)
+- [S4] [Библиотека Конгресса: Photographers and Their Studios](https://www.loc.gov/exhibits/civil-war-photographs/photographers-and-their-studios.html)
 
 <!-- DZEN_POLICY_RISK: AI_GENERATED_TEXT -->
 
 ## Происхождение и ограничения
-
-Текст полностью создан с помощью ИИ; иллюстрация также создана с помощью ИИ. Исторические сведения сверены с указанными источниками; изображение является художественной интерпретацией, а не архивным документом. Дзен предупреждает, что автоматически сгенерированные тексты могут противоречить требованиям платформы. Этот материал не проходил модерацию Дзена, его публикация и монетизация не гарантируются.
+Текст полностью создан с помощью ИИ. Требования Дзена могут запрещать такие тексты, и публикация, модерация и монетизация не гарантированы.

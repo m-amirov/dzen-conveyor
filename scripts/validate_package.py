@@ -6,6 +6,7 @@ the correct period; those are editorial-review responsibilities.
 """
 
 import argparse
+from datetime import date
 import json
 import re
 from pathlib import Path
@@ -17,6 +18,14 @@ SOURCE_RE = re.compile(r"(?m)^\s*-\s*\[(S\d+)\]\s+(https?://\S+)")
 CLAIM_RE = re.compile(r"(?m)^\s*-\s*\[(C\d+)\]\s+(verified|disputed|unverified)\s+([^\n]+)")
 SOURCE_REF_RE = re.compile(r"\[(S\d+)\]")
 SOURCE_METADATA = ("accessed:", "evidence:", "scope:")
+ARTICLE_START = "<!-- APPROVED_ARTICLE_START -->"
+ARTICLE_END = "<!-- APPROVED_ARTICLE_END -->"
+POLICY_MARKER = "<!-- DZEN_POLICY_RISK: AI_GENERATED_TEXT -->"
+POLICY_NOTICE = (
+    "## Происхождение и ограничения\n"
+    "Текст полностью создан с помощью ИИ. Требования Дзена могут запрещать такие тексты, "
+    "и публикация, модерация и монетизация не гарантированы."
+)
 REVIEW_MARKERS = ("VERDICT", "FACT_CHECK", "STYLE_CHECK", "COPYRIGHT_CHECK", "VISUAL_CHECK")
 ALLOWED_IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg", ".webp"}
 IMAGE_SIGNATURES = {
@@ -64,8 +73,21 @@ def check_sources_and_claims(sources: str, claims: str, errors: list[str]) -> No
     if len(source_ids) != len(set(source_ids)):
         errors.append("sources: duplicated source identifiers")
     for line in sources.splitlines():
-        if SOURCE_RE.match(line) and not all(field in line for field in SOURCE_METADATA):
-            errors.append(f"sources: missing evidence metadata in {line[:70]}")
+        if SOURCE_RE.match(line):
+            if not all(field in line for field in SOURCE_METADATA):
+                errors.append(f"sources: missing evidence metadata in {line[:70]}")
+                continue
+            values = {}
+            for field in ("accessed", "evidence", "scope"):
+                match = re.search(rf"\b{field}:\s*([^;\n]*)", line)
+                values[field] = match.group(1).strip() if match else ""
+            try:
+                stamp = date.fromisoformat(values["accessed"])
+                valid_date = bool(re.fullmatch(r"\d{4}-\d{2}-\d{2}", values["accessed"])) and stamp <= date.today()
+            except ValueError:
+                valid_date = False
+            if not valid_date or len(values["evidence"]) < 8 or len(values["scope"]) < 8:
+                errors.append(f"sources: invalid access/evidence metadata in {line[:70]}")
 
     matches = CLAIM_RE.findall(claims)
     if not matches:
@@ -156,30 +178,54 @@ def check_images(article_dir: Path, errors: list[str]) -> list[dict]:
 
 
 def check_publication(draft: str, publish: str, sources: str, images: list[dict], errors: list[str]) -> None:
-    # All approved article paragraphs must appear in order. The publication
-    # may add cover/captions and expand the source list, not rewrite the draft.
-    offset = 0
-    for paragraph in draft.split("\n\n"):
-        paragraph = paragraph.strip()
-        if not paragraph or paragraph.startswith("**Источники:**"):
-            continue
-        position = publish.find(paragraph, offset)
-        if position < 0:
-            errors.append("publish: approved draft content differs")
-            break
-        offset = position + len(paragraph)
-    for _, url in SOURCE_RE.findall(sources):
-        if url not in publish:
-            errors.append(f"publish: missing source URL {url}")
-    for image in images:
-        if not isinstance(image, dict):
-            continue
+    # Require an exact immutable article block. Cover, source links and policy
+    # note are permitted only in dedicated, structurally validated regions.
+    if publish.count(ARTICLE_START) != 1 or publish.count(ARTICLE_END) != 1:
+        errors.append("publish: approved draft markers missing or repeated")
+        return
+    prefix, remainder = publish.split(ARTICLE_START, 1)
+    article, suffix = remainder.split(ARTICLE_END, 1)
+    if article.strip() != draft.strip():
+        errors.append("publish: approved draft content differs")
+
+    # A caption must be visible right beside its own Markdown image, never
+    # merely hidden in an HTML comment elsewhere in the publication.
+    cover_lines = [line.strip() for line in prefix.splitlines() if line.strip()]
+    expected_images = [item for item in images if isinstance(item, dict)]
+    if len(cover_lines) != 2 * len(expected_images):
+        errors.append("publish: unexpected cover content or missing image reference/caption")
+    for index, image in enumerate(expected_images):
         path = image.get("path")
-        if isinstance(path, str) and f"]({path})" not in publish:
-            errors.append(f"publish: missing image reference {path}")
         caption = image.get("caption")
-        if isinstance(caption, str) and caption not in publish:
+        link = cover_lines[2 * index] if len(cover_lines) > 2 * index else ""
+        visible_caption = cover_lines[2 * index + 1].strip("*_ ") if len(cover_lines) > 2 * index + 1 else ""
+        if not isinstance(path, str) or not re.fullmatch(r"!\[[^\]\n]+\]\(" + re.escape(path) + r"\)", link):
+            errors.append(f"publish: missing image reference {path}")
+        if not isinstance(caption, str) or visible_caption != caption:
             errors.append(f"publish: missing image caption for {path}")
+
+    parts = suffix.strip().split(POLICY_MARKER)
+    if len(parts) != 2:
+        errors.append("policy: publication warning marker missing or duplicated")
+        return
+    source_section, policy_section = parts
+    lines = [line.strip() for line in source_section.splitlines() if line.strip()]
+    if not lines or lines[0] != "## Ссылки на источники":
+        errors.append("publish: source section missing")
+    actual_pairs = []
+    for line in lines[1:]:
+        match = re.fullmatch(r"- \[(S\d+)\] \[[^\]\n]+\]\((https?://[^\s)]+)\)", line)
+        if not match:
+            errors.append("publish: unexpected source-section content")
+            continue
+        actual_pairs.append(match.groups())
+    for source_id, url in SOURCE_RE.findall(sources):
+        if (source_id, url) not in actual_pairs:
+            errors.append(f"publish: missing source URL {url}")
+    if len(actual_pairs) != len(SOURCE_RE.findall(sources)):
+        errors.append("publish: unexpected source-section content")
+    if policy_section.strip() != POLICY_NOTICE:
+        errors.append("policy: complete visible AI/platform disclosure missing")
 
 
 def validate_package(article_dir: Path) -> list[str]:
@@ -210,16 +256,8 @@ def validate_package(article_dir: Path) -> list[str]:
             errors.append(f"review: missing {marker}: PASS")
     images = check_images(article_dir, errors)
     check_publication(draft, publish, sources, images, errors)
-    if "<!-- DZEN_POLICY_RISK: AI_GENERATED_TEXT -->" not in publish:
+    if POLICY_MARKER not in publish:
         errors.append("policy: publication warning marker missing")
-    disclosure = re.search(
-        r"(?ms)^## Происхождение и ограничения\s*\n(.*?)(?=^## |\Z)", publish
-    )
-    note = disclosure.group(1).lower() if disclosure else ""
-    if not all(term in note for term in ("полностью", "ии", "дзен", "монетизац")) or not (
-        "требован" in note or "правил" in note
-    ) or "не гарантир" not in note:
-        errors.append("policy: complete visible AI/platform disclosure missing")
 
     expected = {
         "schema_version": 1,
