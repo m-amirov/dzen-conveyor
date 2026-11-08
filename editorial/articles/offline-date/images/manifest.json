@@ -1,0 +1,31 @@
+{
+  "images": [
+    {
+      "path": "images/meeting-clock.webp",
+      "kind": "ai_reconstruction",
+      "caption": "Встреча у заметного городского ориентира в конце 1970-х годов. Художественная реконструкция.",
+      "prompt": "Use case: historical-scene. Asset type: landscape cover illustration for a Russian cultural-history article about meeting for a date before mobile phones. One cohesive scene in a Soviet city circa late 1970s: two young adult people dressed in modest period-appropriate coats and clothes arrive at a meeting spot below a large outdoor analog street clock near an architecturally plausible Soviet metro entrance; overcast early evening, natural believable proportions, restrained narrative tension, one person looking toward arriving companion. Elegant editorial hand-painted gouache mixed with subtle oil texture, muted warm ocher, slate blue, brown and cream, believable historic street details, horizontal 3:2 composition with richly layered city environment. No modern devices, no smartphones, no modern cars, no logos, no words or readable signs, no caption or border, no fake archival photograph.",
+      "rights": "Original AI-generated image using built-in OpenAI image generation; no third-party input photos. Publication and commercial usage terms must be checked before release.",
+      "checked": true,
+      "historical_check": "PASS"
+    },
+    {
+      "path": "images/payphone.webp",
+      "kind": "ai_reconstruction",
+      "caption": "Уличный телефон-автомат и монета для городского звонка. Художественная реконструкция.",
+      "prompt": "Use case: historical-scene. Asset type: landscape inline illustration for cultural history article. Intimate medium close-up of anonymous young adult hand placing a small Soviet coin into authentic-looking metal street telephone payphone with rotary dial inside a modest public glass phone booth, Soviet urban street circa 1980; coin and dial clear focal point, pale rainy daylight from outside, painterly editorial gouache and oil texture, palette cream, gray-blue, warm umber and dusty green, horizontal 3:2. Hardware mechanically plausible; no other phone in scene, no modern mobiles, no modern advertising, no fake archival photo effects, no words, numbers, labels or watermarks.",
+      "rights": "Original AI-generated image using built-in OpenAI image generation; no third-party input photos. Publication and commercial usage terms must be checked before release.",
+      "checked": true,
+      "historical_check": "PASS"
+    },
+    {
+      "path": "images/cinema-wait.webp",
+      "kind": "ai_reconstruction",
+      "caption": "Ожидание встречи возле кинотеатра в советском городе 1980-х годов. Художественная реконструкция.",
+      "prompt": "Use case: historical-scene. Asset type: landscape inline editorial illustration for article about missed Soviet-era date. At dusk in a Soviet city of the early 1980s, one young adult in era-appropriate dark wool coat waits quietly near modest cinema entrance under warm light, holding two plain paper tickets (no printed text), few people in the distance passing by, wet pavement, subtle melancholy but not theatrical or exaggerated. Single coherent painterly gouache/oil mixed editorial illustration, historically plausible boxy architecture, muted amber, indigo, charcoal and warm cream, horizontal 3:2. Do not show phones, cars in foreground, modern neon, movie posters with text, logos, signs, readable text, watermarks, borders or faux archival camera effects.",
+      "rights": "Original AI-generated image using built-in OpenAI image generation; no third-party input photos. Publication and commercial usage terms must be checked before release.",
+      "checked": true,
+      "historical_check": "PASS"
+    }
+  ]
+}
