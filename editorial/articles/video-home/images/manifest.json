@@ -1,10 +1,10 @@
 {
   "images": [
     {
-      "path": "images/family-screen.webp",
+      "path": "images/family-screen-v2.webp",
       "kind": "ai_reconstruction",
       "caption": "Домашний просмотр записи на видеомагнитофоне в конце 1980-х годов. Художественная реконструкция.",
-      "prompt": "Use case: historical-scene. Landscape cover for the magazine «Люди и время». Three adults in a modest late-1980s Soviet apartment living room watch an old CRT television; a large mechanically plausible silver-and-black VHS recorder sits below it, black videocassette on the coffee table. Warm hand-painted gouache-and-oil editorial illustration, muted terracotta, slate blue, cream and dusty green, 3:2. Period-accurate clothes, wooden wall unit, wallpaper, lamp. No modern devices or real archival-photo effects. First image additionally contained unwanted titles; edited using the source image as target to completely remove all typography and replace it with matching curtains and wallpaper while preserving the domestic scene.",
+      "prompt": "Use case: historical-scene. Landscape cover for the magazine «Люди и время». Three adults in a modest late-1980s Soviet apartment living room watch an old CRT television; a large mechanically plausible silver-and-black VHS recorder sits below it, black videocassette on the coffee table. Warm hand-painted gouache-and-oil editorial illustration, muted terracotta, slate blue, cream and dusty green, 3:2. Period-accurate clothes, wooden wall unit, wallpaper, lamp. No modern devices or real archival-photo effects. First edit removed unwanted overlaid titles. Second edit corrected an impossible seven-segment time 21:87 to 21:37 while preserving scene and composition.",
       "rights": "Original image generated and text removed using built-in OpenAI image-generation/editing tools; no third-party reference photos; verify platform/commercial terms before actual publication.",
       "checked": true,
       "historical_check": "PASS"
@@ -19,10 +19,10 @@
       "historical_check": "PASS"
     },
     {
-      "path": "images/timer.webp",
+      "path": "images/timer-v2.webp",
       "kind": "ai_reconstruction",
       "caption": "Настройка времени записи на домашнем видеомагнитофоне. Художественная реконструкция.",
-      "prompt": "Use case: historical-scene. Landscape 3:2 close-up editorial gouache-and-oil illustration of an anonymous adult hand programming physical buttons of a bulky late-1980s home VHS recorder with red digital time digits beneath an old wooden CRT television in a Soviet apartment. Warm indoor light, tea cup and paper notebook, plausible period technology, subtle earthy colors, no other viewers. No readable words, labels, brands, modern remotes, flat TVs, smartphones, watermarks or titles.",
+      "prompt": "Use case: historical-scene. Landscape 3:2 close-up editorial gouache-and-oil illustration of an anonymous adult hand programming physical buttons of a bulky late-1980s home VHS recorder with red digital time digits beneath an old wooden CRT television in a Soviet apartment. Warm indoor light, tea cup and paper notebook, plausible period technology, subtle earthy colors, no other viewers. No readable words, labels, brands, modern remotes, flat TVs, smartphones, watermarks or titles. Second edit replaced physically impossible visible vertical cassette reels with a closed opaque horizontal VHS cassette door, retaining time 19:30 and the rest of the scene.",
       "rights": "Original AI-generated image using built-in OpenAI image generation, no reference photos; verify platform/commercial terms before actual publication.",
       "checked": true,
       "historical_check": "PASS"
