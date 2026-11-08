@@ -1,0 +1,43 @@
+{
+  "images": [
+    {
+      "path": "images/cover-arrival.webp",
+      "kind": "ai_reconstruction",
+      "caption": "Приезд молодого специалиста в незнакомый город начала 1980-х. Персонаж и место вымышлены. Художественная реконструкция.",
+      "prompt": "Use case: historical-scene. Original editorial painted gouache illustration, landscape 3:2. USSR early-to-mid 1980s, unspecified small railway station, a fictional young adult man in modest plain grey coat stands on the platform beside one brown hard-sided suitcase, understated arrival at his first job. Wide scene, soft daylight, tactile paper, muted slate blue, dusty green and terracotta, modern documentary magazine aesthetic, clearly painterly not a photograph. Plausible ordinary period clothing, simple railway platform and distant carriage, no heroic pose. No text, letters, logos, signs, dates, watermarks, badges, fake archive marks, modern phones or contemporary wheeled luggage. No recognizable real person.",
+      "inspection": "Финальный WebP отдельно открыт визуальным инструментом 2026-11-08. Молодой взрослый, чемодан без колёс, платформа и старый вагон, пальто и обувь правдоподобны для общей сцены. Читаемых надписей, ложных дат, современных устройств, видимых грубых анатомических дефектов нет. Не доказательство конкретной станции или распределения персонажа.",
+      "rights": "ai_generated_original",
+      "generator": "built_in_image_gen",
+      "checked": true,
+      "historical_check": "PASS",
+      "width": 1536,
+      "height": 1024
+    },
+    {
+      "path": "images/placement-commission.webp",
+      "kind": "ai_reconstruction",
+      "caption": "Обсуждение будущего места работы в вузовском кабинете начала 1980-х. Персонажи вымышлены. Художественная реконструкция.",
+      "prompt": "Use case: historical-scene. Original editorial gouache illustration landscape 3:2, clearly painted not archival photo. USSR university office early 1980s, fictional adult female graduate sits across a modest wooden table from two adult members of a placement commission, one middle aged woman and one older man, eye-level medium-wide interior. Simple 1980s blouses, jacket, wooden chairs, plain folder and blank sheets of paper without any readable marks. Calm professional exchange, hands simply resting on table, generous spacing, diffuse window light, paper texture, muted cream graphite dusty green and terracotta. No text, symbols, emblems, posters, readable documents, stamps, dates, logos, modern computers or phones. Not a portrait of any real person.",
+      "inspection": "Финальный WebP отдельно открыт визуальным инструментом 2026-11-08. Три взрослых за деревянным столом, шкаф с книгами, папка и два пустых листа. Листы действительно без текста: нет псевдодиплома, ложных подписей и печатей. Руки и посадка связны, современного оборудования нет. Сцена не воспроизводит состав реальной комиссии или Тамонову.",
+      "rights": "ai_generated_original",
+      "generator": "built_in_image_gen",
+      "checked": true,
+      "historical_check": "PASS",
+      "width": 1536,
+      "height": 1024
+    },
+    {
+      "path": "images/packing-for-move.webp",
+      "kind": "ai_reconstruction",
+      "caption": "Сбор вещей перед переездом: одежда, книги и связанная коробка. Собирательный бытовой сюжет начала 1980-х. Художественная реконструкция.",
+      "prompt": "Use case: historical-scene. Original editorial gouache still life, landscape 3:2, clearly painterly. USSR early 1980s, packing for a move to a first job: open brown hard-sided suitcase with neatly folded plain clothes on a simple bed, small stack of books with completely blank spines beside a tied brown cardboard box on the floor, simple unadorned room. Oblique overhead viewpoint, no people, soft morning window light, tactile paper and cloth, muted cream graphite slate blue dusty green warm terracotta. Distinct from station or office image. No text, letters, numbers, logos, stamps, fake archive marks, modern luggage wheels, electronics or contemporary branded products. General reconstruction, not an exact historical household.",
+      "inspection": "Финальный WebP отдельно открыт визуальным инструментом 2026-11-08. Открытый жёсткий чемодан, одежда, четыре книги без надписей и перевязанная коробка, простая кровать и стул. Нет людей или анатомических рисков, современной техники и читаемых марок. Не иллюстрация реального имущества Тамоновой и не изображение 500 кг.",
+      "rights": "ai_generated_original",
+      "generator": "built_in_image_gen",
+      "checked": true,
+      "historical_check": "PASS",
+      "width": 1536,
+      "height": 1024
+    }
+  ]
+}
