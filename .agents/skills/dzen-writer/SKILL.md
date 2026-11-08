@@ -20,8 +20,8 @@ Read the central question and every verified `[C#]` claim with its supporting `[
 3. Generate the full Russian text **without asking for an author draft or intermediate approval**. Aim around 4–6 thousand characters only when the material sustains it; do not invent facts to hit the target.
 4. Use precise attribution for quotations, figures, personal accounts and local practices. No fabricated dialogue, fake diary, invented grandmother recollection, first-person claim of lived experience, or generic «все думали» statements.
 5. Add reader-useful context, examples *grounded in the ledger*, and a nuanced ending. Contradictions and uncertainty remain visible; Dzen needs substance, not a sentimental universal moral.
-6. List directly used source links at the end under `Источники` when suitable for publication; keep full evidence in `sources.md` and `claims.md`.
-7. Check the draft against `docs/style-guide.md`: repeated thesis, unsupported decorative scenes, boilerplate introduction, stale generalizations. Save the complete result as `draft.md` and send it to `dzen-anti-slop`.
+6. Write only reader-facing prose in `draft.md`: title, lead, article sections and conclusion. Do not insert `[S1]` / `[C1]` ledger codes, a source list, footnotes referring to `sources.md` / `claims.md`, or a publication-package appendix. Use natural-language attribution to museums, researchers and works when it helps readers understand a claim. Keep exact URLs and evidence mapping **only** in `sources.md` and `claims.md`.
+7. Check the draft against `docs/style-guide.md`: repeated thesis, unsupported decorative scenes, boilerplate introduction, stale generalizations and leaked internal evidence codes. Save the complete result as `draft.md` and send it to `dzen-anti-slop`.
 
 ## Output
 

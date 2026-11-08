@@ -16,7 +16,7 @@ Make a checkable claim ledger from **sources actually accessed**. This step cons
 3. Open and read each relevant source. For each, record a stable ID, title, publication/author, URL or archive catalog reference, access date, exact relevant information, limits and rights. A snippet, inaccessible link or guessed citation belongs only in **Leads to investigate**, never in the verified-source list.
 4. For each material claim, add an entry using the exact contract: `- [C1] verified [S1] [S2] — precise assertion and scope`. Use `disputed` or `unverified` for weaker cases; do not promote uncertainty to fact because the piece is due today.
 5. Check chronology, region, representation and the difference between policy, memoir and observed practice. If evidence conflicts, record both interpretations and explain the narrower supported version.
-6. Save `sources.md` with `- [S1] https://... — author/title; accessed: YYYY-MM-DD; evidence: what was actually read; scope: period/region and limits`. These literal markers are required by the validator, and must record actual observations, not decorative text. Save `claims.md` with every claim's status and evidence. Keep search leads separate under a non-verified heading.
+6. Save `sources.md` with `- [S1] https://... — author/title; accessed: YYYY-MM-DD; evidence: what was actually read; scope: period/region and limits`. These literal markers are required by the **internal-ledger** validator, and must record actual observations, not decorative text. Save `claims.md` with every claim's status and evidence. Keep search leads separate under a non-verified heading. Source/claim IDs are for internal checking and must not be appended to `draft.md` or `publish.md`.
 
 ## Gate
 

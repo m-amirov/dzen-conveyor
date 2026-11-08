@@ -3,9 +3,27 @@
     {
       "path": "images/portrait-studio-illustration.webp",
       "kind": "ai_illustration",
-      "caption": "Иллюстрация, созданная с помощью ИИ: обобщённая сцена фотосъёмки в ателье XIX века. Не архивная фотография и не изображение реальной семьи.",
+      "caption": "Фотоателье второй половины XIX века: семья готовится к съёмке перед большой камерой. Художественная иллюстрация.",
       "prompt": "Historical-scene editorial illustration for Люди и время: anonymous three-person family sitting formally for a large 1870s wooden bellows studio camera, partially visible photographer, 19th-century clothing, neutral painted backdrop and upholstered chair, painterly gouache/oil texture, warm paper and terracotta/slate palette, wide 3:2, natural light; no text, logos, archival marks, modern objects or real identifiable people.",
       "rights": "Original AI-generated artwork using the built-in OpenAI image generation tool; no third-party reference image supplied; review service terms before external commercial reuse.",
+      "checked": true,
+      "historical_check": "PASS"
+    },
+    {
+      "path": "images/carte-de-visite-album.webp",
+      "kind": "ai_illustration",
+      "caption": "Фотоальбом с портретными карточками второй половины XIX века — такие снимки хранили и дарили близким. Художественная иллюстрация.",
+      "prompt": "Use case: historical-scene. Editorial illustration of an open dark leather 1870s family photograph album with small mounted carte-de-visite albumen portrait cards, loose studio portraits, a ribbon and a sealed envelope on a tabletop. Anonymous Victorian subjects, era-plausible clothing, matte painted gouache/oil texture, warm paper, sepia and terracotta, natural window lighting, wide horizontal format; no legible lettering, modern devices, fake archival stamps or historical-photo authenticity claims.",
+      "rights": "Original AI-generated illustration created with built-in OpenAI image generation, no third-party reference images supplied; review service terms before commercial reuse.",
+      "checked": true,
+      "historical_check": "PASS"
+    },
+    {
+      "path": "images/civil-war-mobile-studio.webp",
+      "kind": "ai_reconstruction",
+      "caption": "Передвижное фотоателье у военного лагеря в США в 1860-х годах. Художественная реконструкция.",
+      "prompt": "Use case: historical-scene. Illustrative Civil War-era itinerant photography setup circa 1862–1864 near an American military camp: anonymous seated Union soldier in plausible blue wool uniform against plain canvas backdrop, photographer operating a wooden bellows plate camera on tripod, tents in daylight. Painterly matte gouache/oil magazine illustration, muted paper, slate blue, terracotta and gray-green, horizontal; no names, combat, modern objects, arrows, printed text, or false archival-photo framing.",
+      "rights": "Original AI-generated illustration created with built-in OpenAI image generation, no third-party reference images supplied; review service terms before commercial reuse.",
       "checked": true,
       "historical_check": "PASS"
     }

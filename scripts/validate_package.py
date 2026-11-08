@@ -7,6 +7,7 @@ the correct period; those are editorial-review responsibilities.
 
 import argparse
 from datetime import date
+import hashlib
 import json
 import re
 from pathlib import Path
@@ -17,13 +18,20 @@ from PIL import Image, UnidentifiedImageError
 SOURCE_RE = re.compile(r"(?m)^\s*-\s*\[(S\d+)\]\s+(https?://\S+)")
 CLAIM_RE = re.compile(r"(?m)^\s*-\s*\[(C\d+)\]\s+(verified|disputed|unverified)\s+([^\n]+)")
 SOURCE_REF_RE = re.compile(r"\[(S\d+)\]")
+READER_CITATION_RE = re.compile(r"\[(?:S|C)\d+\]")
+READER_SOURCE_LIST_RE = re.compile(
+    r"(?mi)^\s*(?:#{1,6}\s+(?:источники|ссылки на источники|список источников)\s*:?\s*$"
+    r"|\*\*(?:источники|ссылки на источники|список источников):?\*\*"
+    r"|(?:источники|ссылки на источники|список источников):)"
+)
+READER_INTERNAL_FILE_RE = re.compile(r"(?i)\b(?:sources|claims)\.md\b")
 SOURCE_METADATA = ("accessed:", "evidence:", "scope:")
 ARTICLE_START = "<!-- APPROVED_ARTICLE_START -->"
 ARTICLE_END = "<!-- APPROVED_ARTICLE_END -->"
 POLICY_MARKER = "<!-- DZEN_POLICY_RISK: AI_GENERATED_TEXT -->"
 POLICY_NOTICE = (
     "## Происхождение и ограничения\n"
-    "Текст полностью создан с помощью ИИ. Требования Дзена могут запрещать такие тексты, "
+    "Текст и иллюстрации полностью созданы с помощью ИИ. Требования Дзена могут запрещать такие тексты, "
     "и публикация, модерация и монетизация не гарантированы."
 )
 REVIEW_MARKERS = ("VERDICT", "FACT_CHECK", "STYLE_CHECK", "COPYRIGHT_CHECK", "VISUAL_CHECK")
@@ -113,7 +121,11 @@ def check_images(article_dir: Path, errors: list[str]) -> list[dict]:
     if not isinstance(images, list) or not images:
         errors.append("images: manifest must contain at least one image")
         return []
+    if not 3 <= len(images) <= 4:
+        errors.append("images: expected 3 or 4 illustrations including cover")
     base = article_dir.resolve()
+    seen_paths: set[str] = set()
+    seen_digests: set[str] = set()
     for index, image in enumerate(images, 1):
         label = f"image {index}"
         if not isinstance(image, dict):
@@ -123,6 +135,9 @@ def check_images(article_dir: Path, errors: list[str]) -> list[dict]:
         if not isinstance(relative, str) or not relative.startswith("images/"):
             errors.append(f"{label}: image path must be under images/")
             continue
+        if relative in seen_paths:
+            errors.append("images: duplicate image path")
+        seen_paths.add(relative)
         path = (article_dir / relative).resolve()
         if not path.is_relative_to(base / "images"):
             errors.append(f"{label}: image path escapes article directory")
@@ -132,6 +147,10 @@ def check_images(article_dir: Path, errors: list[str]) -> list[dict]:
         if not path.is_file() or path.stat().st_size < 12:
             errors.append(f"{label}: image file missing or empty")
         else:
+            digest = hashlib.sha256(path.read_bytes()).hexdigest()
+            if digest in seen_digests:
+                errors.append("images: duplicate image content")
+            seen_digests.add(digest)
             with path.open("rb") as image_file:
                 header = image_file.read(12)
             if not any(header.startswith(prefix) for prefix in IMAGE_SIGNATURES.get(path.suffix.lower(), ())):
@@ -163,23 +182,32 @@ def check_images(article_dir: Path, errors: list[str]) -> list[dict]:
             errors.append(f"{label}: caption must be a string")
             continue
         caption_lower = caption.lower()
-        ai_disclosed = bool(re.search(r"\bии\b", caption_lower)) and (
-            "создан" in caption_lower or "сгенерирован" in caption_lower
-        )
-        if kind == "ai_reconstruction" and ("реконструкц" not in caption_lower or not ai_disclosed):
-            errors.append(f"{label}: AI reconstruction disclosure missing")
-        elif kind == "ai_illustration" and not ai_disclosed:
-            errors.append(f"{label}: AI illustration disclosure missing")
-        elif kind not in {"ai_reconstruction", "ai_illustration"}:
+        if not caption.strip():
+            errors.append(f"{label}: caption required")
+        if re.search(r"\bии\b|\bai\b|нейросет|сгенерирован|генеративн|искусственн\w* интеллект", caption_lower):
+            errors.append(f"{label}: AI generation wording in reader caption")
+        if kind == "ai_reconstruction" and "реконструкц" not in caption_lower:
+            errors.append(f"{label}: historical reconstruction must be labeled in caption")
+        if kind not in {"ai_reconstruction", "ai_illustration"}:
             errors.append(f"{label}: unsupported image kind")
         if any(term in caption_lower for term in ("архивное фото", "подлинный снимок", "реальное фото", "фотография из архива")):
             errors.append(f"{label}: misleading claim of archival authenticity")
     return images
 
 
-def check_publication(draft: str, publish: str, sources: str, images: list[dict], errors: list[str]) -> None:
-    # Require an exact immutable article block. Cover, source links and policy
-    # note are permitted only in dedicated, structurally validated regions.
+def check_reader_text(text: str, label: str, errors: list[str]) -> None:
+    """Editorial IDs and provenance files belong in ledgers, not reader copy."""
+    if READER_CITATION_RE.search(text):
+        errors.append(f"{label}: internal citation marker in reader text")
+    if READER_SOURCE_LIST_RE.search(text):
+        errors.append(f"{label}: source list in reader text")
+    if READER_INTERNAL_FILE_RE.search(text):
+        errors.append(f"{label}: internal file reference in reader text")
+
+
+def check_publication(draft: str, publish: str, images: list[dict], errors: list[str]) -> None:
+    # Require an exact immutable article block. Cover and policy note are
+    # permitted only in their dedicated, structurally validated regions.
     if publish.count(ARTICLE_START) != 1 or publish.count(ARTICLE_END) != 1:
         errors.append("publish: approved draft markers missing or repeated")
         return
@@ -192,9 +220,9 @@ def check_publication(draft: str, publish: str, sources: str, images: list[dict]
     # merely hidden in an HTML comment elsewhere in the publication.
     cover_lines = [line.strip() for line in prefix.splitlines() if line.strip()]
     expected_images = [item for item in images if isinstance(item, dict)]
-    if len(cover_lines) != 2 * len(expected_images):
+    if len(cover_lines) != 2:
         errors.append("publish: unexpected cover content or missing image reference/caption")
-    for index, image in enumerate(expected_images):
+    for index, image in enumerate(expected_images[:1]):
         path = image.get("path")
         caption = image.get("caption")
         link = cover_lines[2 * index] if len(cover_lines) > 2 * index else ""
@@ -204,26 +232,44 @@ def check_publication(draft: str, publish: str, sources: str, images: list[dict]
         if not isinstance(caption, str) or visible_caption != caption:
             errors.append(f"publish: missing image caption for {path}")
 
+    # Only the cover precedes the article. Remaining illustrations must be
+    # embedded in the approved reader copy, each with its own visible caption.
+    draft_lines = draft.splitlines()
+    inline_section_indices: list[int] = []
+    for image in expected_images[1:]:
+        path = image.get("path")
+        caption = image.get("caption")
+        if not isinstance(path, str):
+            continue
+        image_line = re.compile(r"!\[[^\]\n]+\]\(" + re.escape(path) + r"\)")
+        indices = [index for index, line in enumerate(draft_lines) if image_line.fullmatch(line.strip())]
+        if len(indices) != 1:
+            errors.append(f"publish: missing inline image reference {path}")
+            continue
+        index = indices[0]
+        next_line = draft_lines[index + 1].strip("*_ ") if index + 1 < len(draft_lines) else ""
+        if not isinstance(caption, str) or next_line != caption:
+            errors.append(f"publish: missing inline image caption for {path}")
+        previous_sections = [i for i, line in enumerate(draft_lines[:index]) if line.startswith("## ")]
+        if not previous_sections or not any(line.strip() and not line.startswith("#") for line in draft_lines[index + 2:]):
+            errors.append(f"publish: inline image not inside article sections {path}")
+        else:
+            inline_section_indices.append(previous_sections[-1])
+
+    if len(inline_section_indices) != len(set(inline_section_indices)):
+        errors.append("publish: inline images not distributed across sections")
+    expected_paths = [image.get("path") for image in expected_images[1:]]
+    all_inline_links = re.findall(r"!\[[^\]\n]+\]\(([^)\n]+)\)", draft)
+    if sorted(all_inline_links) != sorted(path for path in expected_paths if isinstance(path, str)):
+        errors.append("publish: undeclared or repeated inline image")
+
     parts = suffix.strip().split(POLICY_MARKER)
     if len(parts) != 2:
         errors.append("policy: publication warning marker missing or duplicated")
         return
-    source_section, policy_section = parts
-    lines = [line.strip() for line in source_section.splitlines() if line.strip()]
-    if not lines or lines[0] != "## Ссылки на источники":
-        errors.append("publish: source section missing")
-    actual_pairs = []
-    for line in lines[1:]:
-        match = re.fullmatch(r"- \[(S\d+)\] \[[^\]\n]+\]\((https?://[^\s)]+)\)", line)
-        if not match:
-            errors.append("publish: unexpected source-section content")
-            continue
-        actual_pairs.append(match.groups())
-    for source_id, url in SOURCE_RE.findall(sources):
-        if (source_id, url) not in actual_pairs:
-            errors.append(f"publish: missing source URL {url}")
-    if len(actual_pairs) != len(SOURCE_RE.findall(sources)):
-        errors.append("publish: unexpected source-section content")
+    extra_content, policy_section = parts
+    if extra_content.strip():
+        errors.append("publish: unexpected content after approved article")
     if policy_section.strip() != POLICY_NOTICE:
         errors.append("policy: complete visible AI/platform disclosure missing")
 
@@ -249,13 +295,15 @@ def validate_package(article_dir: Path) -> list[str]:
         errors.append("draft: article is too short for a complete publication")
     if len(publish.strip()) < 1500:
         errors.append("publish: packaged article is too short")
+    check_reader_text(draft, "draft", errors)
+    check_reader_text(publish, "publish", errors)
     if not re.search(r"(?m)^VERDICT: PASS\s*$", anti_slop):
         errors.append("anti-slop: missing VERDICT: PASS")
     for marker in REVIEW_MARKERS:
         if not re.search(rf"(?m)^{marker}: PASS\s*$", review):
             errors.append(f"review: missing {marker}: PASS")
     images = check_images(article_dir, errors)
-    check_publication(draft, publish, sources, images, errors)
+    check_publication(draft, publish, images, errors)
     if POLICY_MARKER not in publish:
         errors.append("policy: publication warning marker missing")
 

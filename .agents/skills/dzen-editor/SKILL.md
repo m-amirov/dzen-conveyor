@@ -14,9 +14,9 @@ Act as an **independent quality gate** for automatically generated articles. An 
 Read `brief.md`, `sources.md`, `claims.md`, `draft.md`, `anti-slop-report.md`, `images/manifest.json`, the real image files and applicable docs.
 
 1. **Factual:** Map central text claims back to the ledger. Read the supplied evidence where possible. Separate rules from actual practice, one memoir from population evidence, correlation from causation, and historical eras/regions. Mark invented quotes and missing sources.
-2. **Style:** Does every section provide a new insight? Is the title's promise fulfilled? Is the opening specific, the ending earned, and the text free of repetitive sentimental filler?
+2. **Style:** Does every section provide a new insight? Is the title's promise fulfilled? Is the opening specific, the ending earned, and the text free of repetitive sentimental filler? Check that the reader sees no `[S#]`/`[C#]` identifiers, `Источники:` footer, `sources.md` pointer or separate source appendix. Audit the facts from the internal ledgers instead.
 3. **Copyright and ethics:** Is prose original? Are quoted passages attributed and appropriately limited? Are rights claims to assets justified? Are living/private individuals handled respectfully?
-4. **Visual:** Inspect the actual assets and captions. No synthetic photo may be passed as a real archive. A prompt or filename is not a visual check.
+4. **Visual:** Inspect all **3–4 distinct assets** (one cover plus 2–3 inline images in different sections), their placement and captions. Captions must naturally explain the scene, **without repetitive AI-generation wording**; reconstructed scenes must be visibly labeled as artistic reconstructions, never real archive photos. Provenance stays in the manifest and one overall publication disclosure. Check that each asset illustrates the adjacent factual topic and is not a near-duplicate. A prompt or filename is not a visual check.
 5. **Platform:** Disclose `fully_ai_generated` and the documented Dzen-policy risk; do not claim moderation or monetization approval.
 
 ## `review.md` output contract

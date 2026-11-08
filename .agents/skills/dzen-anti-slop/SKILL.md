@@ -15,7 +15,7 @@ Quality means **substance per paragraph**, not hiding AI markers. This skill rev
 2. Map each paragraph to one new fact, interpretation or necessary story function. Mark duplicates, generalities and ungrounded emotional claims. Repeated «прошлое и настоящее связаны» metaphors without new information are not new content.
 3. Check that headline, lead, development and conclusion answer the same research question, without excessive symmetry and boilerplate introductions.
 4. Revise autonomously: cut repetitions, reorganize details, simplify pretentious phrases, replace unsupported claims with a sourced explanation, **never** invent quotes, people, dates or remembered dialogue to fill space.
-5. Run a second pass against `claims.md` after every substantive rewrite. Existing citations must still support all factual statements. Prefer a shorter, dense article over length achieved by paraphrase.
+5. Run a second pass against `claims.md` after every substantive rewrite. Internal source IDs must still support all factual statements, but their literal `[S#]` / `[C#]` markers and source footers must not appear in `draft.md`. Prefer a shorter, dense article over length achieved by paraphrase.
 6. If the article lacks enough distinct verified detail to stand alone, send the pipeline back to `dzen-research` or return `BLOCKED_INSUFFICIENT_SUBSTANCE`; do not force a PASS by synonym swapping.
 7. Save the revised full text in `draft.md` and the changes in `anti-slop-report.md`: repeated thesis clusters, deleted padding, newly added *sourced* details, unresolved issues, `VERDICT: PASS|REWORK|BLOCKED`.
 
