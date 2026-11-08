@@ -1,0 +1,6 @@
+__pycache__/
+*.py[cod]
+.DS_Store
+
+# Completed articles can contain generated images, sources, and drafts;
+# they are deliberate Git artifacts unless excluded per article.
