@@ -1,0 +1,31 @@
+{
+  "images": [
+    {
+      "path": "images/cover-neighbors.webp",
+      "kind": "ai_illustration",
+      "caption": "Соседский жест: тарелка с пирогом у дверей двух квартир. Собирательная сцена без точной датировки. Художественная иллюстрация.",
+      "prompt": "Timeless apartment stair landing, two fictional middle-aged women share a plate of homemade pie between two doorways; editorial gouache on textured paper, cream sage graphite terracotta, soft natural light, landscape 3:2, no text and no archive claims.",
+      "rights": "ai_generated_original",
+      "checked": true,
+      "historical_check": "PASS"
+    },
+    {
+      "path": "images/courtyard-memory.webp",
+      "kind": "ai_illustration",
+      "caption": "Двор, который запомнился кому-то тёплым: отдельная сцена не рассказывает обо всех дворах эпохи. Художественная иллюстрация.",
+      "prompt": "Timeless leafy apartment courtyard, two fictional adults converse on a bench, children playing far away; painterly gouache, honest soft dusk light, no identifiable year, no words or archive appearance, landscape 3:2.",
+      "rights": "ai_generated_original",
+      "checked": true,
+      "historical_check": "PASS"
+    },
+    {
+      "path": "images/landing-today.webp",
+      "kind": "ai_illustration",
+      "caption": "Новый способ связи не отменяет разговор лицом к лицу: встреча у лифта в современном подъезде. Художественная иллюстрация.",
+      "prompt": "Current-day apartment building landing near elevator, two fictional neighbors of different ages casually talking, one holds a smartphone with blank dark screen; painterly editorial gouache, pale natural light and muted terracotta, no readable text, 3:2.",
+      "rights": "ai_generated_original",
+      "checked": true,
+      "historical_check": "PASS"
+    }
+  ]
+}
