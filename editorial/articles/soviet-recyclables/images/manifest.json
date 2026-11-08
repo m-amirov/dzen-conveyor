@@ -1,0 +1,70 @@
+{
+  "images": [
+    {
+      "path": "images/cover.webp",
+      "role": "cover",
+      "kind": "ai_reconstruction",
+      "caption": "Пустые бутылки и связка старой бумаги: из дома они отправлялись по разным хозяйственным маршрутам. Художественная реконструкция.",
+      "prompt": "Use case: historical-scene. Asset type: cover for a Russian history editorial, landscape 3:2. Primary request: original restrained painterly editorial still life of intact reusable Soviet food glass bottles and a neat bundle of old folded newspapers tied with plain cotton twine, sitting together on a scuffed wooden kitchen table, USSR around 1984. Clear broad-necked milk bottle, two green narrow-necked unbranded bottles, no caps, no chipped edges; paper visible only as folded edges with no readable writing. Natural side window light, muted dusty green, grey-blue and warm paper palette, modern documentary magazine illustration with visible subtle brush texture, not a photograph. Composition has one coherent subject group, no people, no coins, no labels, no logos, no text, no stamp, no watermark, no plastics or modern gadgets. Historically plausible generic objects, no claim of a particular household or date.",
+      "rights": "ai_generated; original output of built-in image_gen for this article, no third-party source image supplied, no claim of exclusive copyright or archive origin",
+      "provenance": {
+        "generator": "built-in image_gen",
+        "created": "2026-11-08",
+        "original_file": "/workspace/scratch/c0bc6947430c/generated_images/exec-aa5b10b5-1aa9-4ee2-b336-d98e3d4fcd3a.png",
+        "conversion": "ImageMagick magick, PNG to WEBP, quality 90; no compositing or content editing"
+      },
+      "width": 1536,
+      "height": 1024,
+      "sha256": "2babedda7ccf16d477507747d8bfcef4642af5ed2746f674149de6821ecd5fdc",
+      "checked": true,
+      "historical_check": "PASS",
+      "inspection": "2026-11-08, original PNG and final WEBP opened through view_image. Intact broad-necked clear bottle, two green narrow-necked bottles, paper bundle; no legible labels, false Cyrillic, people, modern electronics or severe object artifacts. Painterly illustrative kitchen, not a documented household. No exact bottle standard or year authenticated from image alone.",
+      "evidence": ["C1", "C6"],
+      "placement": "publish.md before APPROVED_ARTICLE_START"
+    },
+    {
+      "path": "images/bottle-crates.webp",
+      "role": "inline",
+      "kind": "ai_reconstruction",
+      "caption": "Целые бутылки в ящиках на тарном складе перед дальнейшей обработкой. Художественная реконструкция.",
+      "prompt": "Use case: historical-scene. Asset type: inline historical editorial illustration for an article on Soviet returnable bottles. Create an original landscape 3:2 painterly magazine illustration of a modest Soviet food-industry bottle storage room circa 1984, viewed at low oblique angle. Exactly three sturdy wooden compartmented beverage crates with intact empty green glass bottles standing individually in compartments, one crate nearer and two behind; utilitarian painted grey-blue wall, concrete floor, large diffuse side daylight. Focus on preserved whole containers and organized storage, not broken glass. Subtle brush textures, natural muted paper, graphite, dusty green, warm wood palette, no artificial aged photo effect. No people, no hands, no readable text or symbols anywhere, no labels on bottles, no stamps, no logos, no modern plastic containers, no automation machines, no fancy warehouse technology. Generic plausible reconstruction, not an authentic archival photograph. Important: coherent bottle necks, complete intact glass mouths, no floating or intersecting glass.",
+      "rights": "ai_generated; original output of built-in image_gen for this article, no third-party source image supplied, no archive attribution",
+      "provenance": {
+        "generator": "built-in image_gen",
+        "created": "2026-11-08",
+        "original_file": "/workspace/scratch/c0bc6947430c/generated_images/exec-2c6c5c4f-5d96-43f1-951b-c2090db662fb.png",
+        "conversion": "ImageMagick magick, PNG to WEBP, quality 90; no compositing or content editing"
+      },
+      "width": 1536,
+      "height": 1024,
+      "sha256": "e5464925894a7517dda37cb0614eacc490ffa70c91cb08636a400a5220bcd5c4",
+      "checked": true,
+      "historical_check": "PASS",
+      "inspection": "2026-11-08, final WEBP opened through view_image. Three distinct wooden compartmented crates, standing whole empty green bottles, visible coherent necks and intact rims. No modern equipment, logos, lettering, false Cyrillic, anatomy or photographic archive claim. S2 documents boxes and warehouse stages; exact crate model and building are intentionally unspecified.",
+      "evidence": ["C1", "C5"],
+      "placement": "draft.md, section После приёмного окна"
+    },
+    {
+      "path": "images/paper-sorting.webp",
+      "role": "inline",
+      "kind": "ai_illustration",
+      "caption": "Бумага и картон на сортировочном столе: вторсырьё нужно подготовить к переработке. Художественная иллюстрация.",
+      "prompt": "Use case: illustration-story. Asset type: inline explanatory magazine illustration, landscape 3:2, for history article about recovered paper. Create an original painterly editorial illustration, moderately overhead close view of a utilitarian large sorting table with three separated piles: folded thin grey newspaper sheets with absolutely no readable letters, off-white loose office paper, and brown corrugated cardboard pieces. A small plain roll of cotton twine near the edge. Background modest dusty grey-blue workshop, soft natural daylight. This is a contemporary explanatory still life of paper materials, not a technical diagram, not an archival photograph. Make textures and distinct materials clear, gentle visible brushwork, palette warm paper, graphite, dusty green and terracotta, no full sepia. No glass bottles, no books with visible titles, no tickets, no logos, no numbers, no typographic symbols or words, no people, no hands, no modern electronic objects, no machines, no arrows. Do not repeat a domestic windowsill composition or crates; distinctly different from other article assets.",
+      "rights": "ai_generated; original output of built-in image_gen for this article, no third-party source image supplied; explanatory still life, not a historical evidence image",
+      "provenance": {
+        "generator": "built-in image_gen",
+        "created": "2026-11-08",
+        "original_file": "/workspace/scratch/c0bc6947430c/generated_images/exec-f140efe1-232d-4bc4-b0cd-fb0eb825988e.png",
+        "conversion": "ImageMagick magick, PNG to WEBP, quality 90; no compositing or content editing"
+      },
+      "width": 1536,
+      "height": 1024,
+      "sha256": "1c67e92a8eb86ef50e1dbdd19a6018a986c428b3e856564c5827f02ee8bf2ac4",
+      "checked": true,
+      "historical_check": "PASS",
+      "inspection": "2026-11-08, final WEBP opened through view_image. Clearly different piles of folded grey paper, light sheets and brown corrugated cardboard, twine on sorting table. Newspaper texture has no decipherable words or false Cyrillic. No dates, tickets, people, glass, logos or quantitative claims. This is explanatory illustration, not a reconstruction of an identified paper-processing plant or a full grade-classification scheme.",
+      "evidence": ["C6", "C7", "C9"],
+      "placement": "draft.md, section Бумага меняла форму"
+    }
+  ]
+}
