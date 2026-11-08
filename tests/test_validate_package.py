@@ -56,9 +56,6 @@ class PackageContractTests(unittest.TestCase):
         (self.article / "publish.md").write_text(
             "![Обложка](images/cover.png)\nИллюстрация, созданная с помощью ИИ\n\n"
             "<!-- APPROVED_ARTICLE_START -->\n" + article_text + "\n<!-- APPROVED_ARTICLE_END -->\n"
-            "## Ссылки на источники\n"
-            "- [S1] [Музей](https://museum.example/collection)\n"
-            "- [S2] [Архив](https://archive.example/paper)\n"
             "\n<!-- DZEN_POLICY_RISK: AI_GENERATED_TEXT -->\n"
             "## Происхождение и ограничения\n"
             "Текст полностью создан с помощью ИИ. Требования Дзена могут запрещать такие тексты, "
@@ -167,16 +164,17 @@ class PackageContractTests(unittest.TestCase):
         )
         self.assertIn("publish: approved draft content differs", self.check_errors())
 
-    def test_rejects_injected_unreviewed_source_section(self):
+    def test_rejects_source_appendix_in_publication(self):
         path = self.article / "publish.md"
         path.write_text(
             path.read_text(encoding="utf-8").replace(
-                "- [S2] [Архив](https://archive.example/paper)",
-                "- [S2] [Архив](https://archive.example/paper)\nПокупайте мой курс!",
+                "<!-- DZEN_POLICY_RISK: AI_GENERATED_TEXT -->",
+                "## Ссылки на источники\n- [S1] [Музей](https://museum.example/collection)\n"
+                "<!-- DZEN_POLICY_RISK: AI_GENERATED_TEXT -->",
             ),
             encoding="utf-8",
         )
-        self.assertIn("publish: unexpected source-section content", self.check_errors())
+        self.assertIn("publish: unexpected content after approved article", self.check_errors())
 
     def test_rejects_missing_image_link_in_publication(self):
         path = self.article / "publish.md"
@@ -200,10 +198,33 @@ class PackageContractTests(unittest.TestCase):
         path.write_text(published, encoding="utf-8")
         self.assertIn("publish: missing image caption", self.check_errors())
 
-    def test_rejects_missing_source_link_in_publication(self):
-        path = self.article / "publish.md"
-        path.write_text(path.read_text(encoding="utf-8").replace("https://archive.example/paper", ""), encoding="utf-8")
-        self.assertIn("publish: missing source URL", self.check_errors())
+    def test_rejects_source_ids_inside_draft_and_approved_article(self):
+        for filename in ("draft.md", "publish.md"):
+            with self.subTest(filename=filename):
+                path = self.article / filename
+                original = path.read_text(encoding="utf-8")
+                path.write_text(original.replace("В статье исследуется бытовой контекст.", "В статье исследуется бытовой контекст. [S4] [C2]"), encoding="utf-8")
+                self.assertIn(f"{filename.split('.')[0]}: internal citation marker in reader text", self.check_errors())
+                path.write_text(original, encoding="utf-8")
+
+    def test_rejects_source_summary_in_reader_text(self):
+        for filename in ("draft.md", "publish.md"):
+            with self.subTest(filename=filename):
+                path = self.article / filename
+                original = path.read_text(encoding="utf-8")
+                path.write_text(original + "\n**Источники:** музей, архив.\n", encoding="utf-8")
+                self.assertIn(f"{filename.split('.')[0]}: source list in reader text", self.check_errors())
+                path.write_text(original, encoding="utf-8")
+
+    def test_rejects_internal_filename_in_reader_text(self):
+        path = self.article / "draft.md"
+        path.write_text(path.read_text(encoding="utf-8") + "\nСсылки приведены в `sources.md`.\n", encoding="utf-8")
+        self.assertIn("draft: internal file reference in reader text", self.check_errors())
+
+    def test_internal_claim_ledger_remains_allowed(self):
+        self.assertIn("[S1]", (self.article / "sources.md").read_text(encoding="utf-8"))
+        self.assertIn("[C1]", (self.article / "claims.md").read_text(encoding="utf-8"))
+        self.assertEqual([], validate_package(self.article))
 
     def test_rejects_corrupt_image_with_valid_magic_bytes(self):
         (self.article / "images" / "cover.png").write_bytes(b"\x89PNG\r\n\x1a\nXXXX")

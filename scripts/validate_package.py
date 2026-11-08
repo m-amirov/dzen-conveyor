@@ -17,6 +17,13 @@ from PIL import Image, UnidentifiedImageError
 SOURCE_RE = re.compile(r"(?m)^\s*-\s*\[(S\d+)\]\s+(https?://\S+)")
 CLAIM_RE = re.compile(r"(?m)^\s*-\s*\[(C\d+)\]\s+(verified|disputed|unverified)\s+([^\n]+)")
 SOURCE_REF_RE = re.compile(r"\[(S\d+)\]")
+READER_CITATION_RE = re.compile(r"\[(?:S|C)\d+\]")
+READER_SOURCE_LIST_RE = re.compile(
+    r"(?mi)^\s*(?:#{1,6}\s+(?:источники|ссылки на источники|список источников)\s*$"
+    r"|\*\*(?:источники|ссылки на источники|список источников):?\*\*"
+    r"|(?:источники|ссылки на источники|список источников):)"
+)
+READER_INTERNAL_FILE_RE = re.compile(r"(?i)\b(?:sources|claims)\.md\b")
 SOURCE_METADATA = ("accessed:", "evidence:", "scope:")
 ARTICLE_START = "<!-- APPROVED_ARTICLE_START -->"
 ARTICLE_END = "<!-- APPROVED_ARTICLE_END -->"
@@ -177,9 +184,19 @@ def check_images(article_dir: Path, errors: list[str]) -> list[dict]:
     return images
 
 
-def check_publication(draft: str, publish: str, sources: str, images: list[dict], errors: list[str]) -> None:
-    # Require an exact immutable article block. Cover, source links and policy
-    # note are permitted only in dedicated, structurally validated regions.
+def check_reader_text(text: str, label: str, errors: list[str]) -> None:
+    """Editorial IDs and provenance files belong in ledgers, not reader copy."""
+    if READER_CITATION_RE.search(text):
+        errors.append(f"{label}: internal citation marker in reader text")
+    if READER_SOURCE_LIST_RE.search(text):
+        errors.append(f"{label}: source list in reader text")
+    if READER_INTERNAL_FILE_RE.search(text):
+        errors.append(f"{label}: internal file reference in reader text")
+
+
+def check_publication(draft: str, publish: str, images: list[dict], errors: list[str]) -> None:
+    # Require an exact immutable article block. Cover and policy note are
+    # permitted only in their dedicated, structurally validated regions.
     if publish.count(ARTICLE_START) != 1 or publish.count(ARTICLE_END) != 1:
         errors.append("publish: approved draft markers missing or repeated")
         return
@@ -208,22 +225,9 @@ def check_publication(draft: str, publish: str, sources: str, images: list[dict]
     if len(parts) != 2:
         errors.append("policy: publication warning marker missing or duplicated")
         return
-    source_section, policy_section = parts
-    lines = [line.strip() for line in source_section.splitlines() if line.strip()]
-    if not lines or lines[0] != "## Ссылки на источники":
-        errors.append("publish: source section missing")
-    actual_pairs = []
-    for line in lines[1:]:
-        match = re.fullmatch(r"- \[(S\d+)\] \[[^\]\n]+\]\((https?://[^\s)]+)\)", line)
-        if not match:
-            errors.append("publish: unexpected source-section content")
-            continue
-        actual_pairs.append(match.groups())
-    for source_id, url in SOURCE_RE.findall(sources):
-        if (source_id, url) not in actual_pairs:
-            errors.append(f"publish: missing source URL {url}")
-    if len(actual_pairs) != len(SOURCE_RE.findall(sources)):
-        errors.append("publish: unexpected source-section content")
+    extra_content, policy_section = parts
+    if extra_content.strip():
+        errors.append("publish: unexpected content after approved article")
     if policy_section.strip() != POLICY_NOTICE:
         errors.append("policy: complete visible AI/platform disclosure missing")
 
@@ -249,13 +253,15 @@ def validate_package(article_dir: Path) -> list[str]:
         errors.append("draft: article is too short for a complete publication")
     if len(publish.strip()) < 1500:
         errors.append("publish: packaged article is too short")
+    check_reader_text(draft, "draft", errors)
+    check_reader_text(publish, "publish", errors)
     if not re.search(r"(?m)^VERDICT: PASS\s*$", anti_slop):
         errors.append("anti-slop: missing VERDICT: PASS")
     for marker in REVIEW_MARKERS:
         if not re.search(rf"(?m)^{marker}: PASS\s*$", review):
             errors.append(f"review: missing {marker}: PASS")
     images = check_images(article_dir, errors)
-    check_publication(draft, publish, sources, images, errors)
+    check_publication(draft, publish, images, errors)
     if POLICY_MARKER not in publish:
         errors.append("policy: publication warning marker missing")
 
