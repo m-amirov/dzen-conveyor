@@ -8,6 +8,24 @@
       "rights": "Original AI-generated illustration created with built-in OpenAI image generation, no third-party input photographs supplied; verify applicable service and platform terms before commercial publication.",
       "checked": true,
       "historical_check": "PASS"
+    },
+    {
+      "path": "images/sectional-living-room.webp",
+      "kind": "ai_reconstruction",
+      "caption": "Визуальная реконструкция, созданная с помощью ИИ: обобщённая городская гостиная начала 1960-х с секционной мебелью. Не снимок конкретной квартиры или выставки.",
+      "prompt": "Use case: historical-scene. Single cohesive natural scene for a Soviet domestic interiors article circa 1960–1962: modest Khrushchev-era apartment with pale light-wood modular sectional cabinet on slender legs, books, vase, glazed compartment with a porcelain tea set, armchair, curtains, parquet floor. Wide horizontal handpainted gouache editorial illustration, muted cream, sage, blue-gray and terracotta, soft daylight. No arrows, labels, collages, text, modern electronics, propaganda emblems or archival-photo claims.",
+      "rights": "Original AI-generated illustration created with built-in OpenAI image generation, no third-party reference images supplied; review service and platform terms before commercial publication.",
+      "checked": true,
+      "historical_check": "PASS"
+    },
+    {
+      "path": "images/family-tea-celebration.webp",
+      "kind": "ai_reconstruction",
+      "caption": "Визуальная реконструкция, созданная с помощью ИИ: пример семейного чаепития в советской квартире 1960-х годов. Не изображение реальной семьи.",
+      "prompt": "Use case: historical-scene. A modest Soviet family celebration at a dining table around 1965, with a coordinated six-person floral porcelain tea service, tea pastries, sugar bowl, milk jug, teapot and gift wrapping with ribbon set aside. Warm natural light, credible 1960s apartment details, horizontal painterly gouache/oil editorial illustration, muted cream, green, blue and terracotta. No modern devices, text, labels, logos, or false archival claims; one cohesive imagined reconstruction.",
+      "rights": "Original AI-generated illustration created with built-in OpenAI image generation, no third-party reference images supplied; review service and platform terms before commercial publication.",
+      "checked": true,
+      "historical_check": "PASS"
     }
   ]
 }

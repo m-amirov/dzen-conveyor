@@ -29,7 +29,19 @@ class PackageContractTests(unittest.TestCase):
             "- [C1] verified [S1] [S2] — описание семейных сервизов\n",
             encoding="utf-8",
         )
-        article_text = "# Почему сервиз стоял за стеклом?\n" + "В статье исследуется бытовой контекст. " * 100
+        article_text = (
+            "# Почему сервиз стоял за стеклом?\n\n"
+            + "В статье исследуется бытовой контекст. " * 35
+            + "\n\n## Важные детали\n\n"
+            + "В статье исследуется бытовой контекст. " * 35
+            + "\n\n![Деталь посуды](images/detail-one.png)\n"
+            + "*Иллюстрация, созданная с помощью ИИ: крупный план посуды.*\n\n"
+            + "## Вещь и память\n\n"
+            + "В статье исследуется бытовой контекст. " * 35
+            + "\n\n![Праздничная сервировка](images/detail-two.png)\n"
+            + "*Иллюстрация, созданная с помощью ИИ: праздничный стол.*\n\n"
+            + "В статье исследуется бытовой контекст. " * 10
+        )
         (self.article / "draft.md").write_text(
             article_text,
             encoding="utf-8",
@@ -41,12 +53,30 @@ class PackageContractTests(unittest.TestCase):
         )
         (self.article / "anti-slop-report.md").write_text("VERDICT: PASS\nПовторы удалены.\n", encoding="utf-8")
         Image.new("RGB", (16, 16), color=(170, 130, 110)).save(images / "cover.png")
+        Image.new("RGB", (16, 16), color=(110, 150, 130)).save(images / "detail-one.png")
+        Image.new("RGB", (16, 16), color=(170, 120, 140)).save(images / "detail-two.png")
         self.images_manifest = {
             "images": [{
                 "path": "images/cover.png",
                 "kind": "ai_illustration",
                 "caption": "Иллюстрация, созданная с помощью ИИ",
                 "prompt": "An old porcelain tea set",
+                "rights": "ai_generated",
+                "checked": True,
+                "historical_check": "PASS",
+            }, {
+                "path": "images/detail-one.png",
+                "kind": "ai_illustration",
+                "caption": "Иллюстрация, созданная с помощью ИИ: крупный план посуды.",
+                "prompt": "Close-up of porcelain",
+                "rights": "ai_generated",
+                "checked": True,
+                "historical_check": "PASS",
+            }, {
+                "path": "images/detail-two.png",
+                "kind": "ai_illustration",
+                "caption": "Иллюстрация, созданная с помощью ИИ: праздничный стол.",
+                "prompt": "Tea party table",
                 "rights": "ai_generated",
                 "checked": True,
                 "historical_check": "PASS",
@@ -86,6 +116,71 @@ class PackageContractTests(unittest.TestCase):
 
     def test_valid_package(self):
         self.assertEqual([], validate_package(self.article))
+
+    def test_rejects_article_with_only_one_image(self):
+        self.images_manifest["images"] = self.images_manifest["images"][:1]
+        self.write_json(self.article / "images" / "manifest.json", self.images_manifest)
+        self.assertIn("images: expected 3 or 4 illustrations including cover", self.check_errors())
+
+    def test_rejects_two_or_five_images(self):
+        original = self.images_manifest["images"]
+        for count in (2, 5):
+            with self.subTest(count=count):
+                self.images_manifest["images"] = original[:2] if count == 2 else original + [dict(original[1]), dict(original[2])]
+                self.write_json(self.article / "images" / "manifest.json", self.images_manifest)
+                self.assertIn("images: expected 3 or 4 illustrations including cover", self.check_errors())
+        self.images_manifest["images"] = original
+
+    def test_accepts_four_distinct_images(self):
+        Image.new("RGB", (16, 16), color=(130, 110, 180)).save(self.article / "images" / "extra.png")
+        self.images_manifest["images"].append({
+            "path": "images/extra.png", "kind": "ai_illustration",
+            "caption": "Иллюстрация, созданная с помощью ИИ: другой сюжет.",
+            "prompt": "Another distinct historical detail", "rights": "ai_generated",
+            "checked": True, "historical_check": "PASS",
+        })
+        self.write_json(self.article / "images" / "manifest.json", self.images_manifest)
+        addition = ("\n\n## Третий сюжет\n\nДругая подтверждённая деталь.\n\n"
+                    "![Другой сюжет](images/extra.png)\n"
+                    "*Иллюстрация, созданная с помощью ИИ: другой сюжет.*\n\n"
+                    "Вывод с новой мыслью.")
+        draft = self.article / "draft.md"
+        draft.write_text(draft.read_text(encoding="utf-8") + addition, encoding="utf-8")
+        publish = self.article / "publish.md"
+        publish.write_text(publish.read_text(encoding="utf-8").replace("\n<!-- APPROVED_ARTICLE_END -->", addition + "\n<!-- APPROVED_ARTICLE_END -->"), encoding="utf-8")
+        self.assertEqual([], validate_package(self.article))
+
+    def test_rejects_missing_inline_illustration(self):
+        for filename in ("draft.md", "publish.md"):
+            with self.subTest(filename=filename):
+                path = self.article / filename
+                original = path.read_text(encoding="utf-8")
+                path.write_text(original.replace("![Деталь посуды](images/detail-one.png)", ""), encoding="utf-8")
+                expected = ("publish: missing inline image reference images/detail-one.png" if filename == "draft.md"
+                            else "publish: approved draft content differs")
+                self.assertIn(expected, self.check_errors())
+                path.write_text(original, encoding="utf-8")
+
+    def test_rejects_inline_illustration_caption_mismatch(self):
+        path = self.article / "draft.md"
+        path.write_text(path.read_text(encoding="utf-8").replace("*Иллюстрация, созданная с помощью ИИ: праздничный стол.*", "*Подлинная фотография.*"), encoding="utf-8")
+        self.assertIn("publish: missing inline image caption for images/detail-two.png", self.check_errors())
+
+    def test_rejects_inline_illustrations_clustered_in_one_section(self):
+        for filename in ("draft.md", "publish.md"):
+            path = self.article / filename
+            path.write_text(path.read_text(encoding="utf-8").replace("## Вещь и память", "### Вещь и память"), encoding="utf-8")
+        self.assertIn("publish: inline images not distributed across sections", self.check_errors())
+
+    def test_rejects_duplicated_image_asset(self):
+        self.images_manifest["images"][2]["path"] = "images/detail-one.png"
+        self.write_json(self.article / "images" / "manifest.json", self.images_manifest)
+        self.assertIn("images: duplicate image path", self.check_errors())
+
+    def test_rejects_same_image_under_different_filenames(self):
+        source = self.article / "images" / "detail-one.png"
+        (self.article / "images" / "detail-two.png").write_bytes(source.read_bytes())
+        self.assertIn("images: duplicate image content", self.check_errors())
 
     def test_requires_two_real_source_entries(self):
         (self.article / "sources.md").write_text("- [S1] https://museum.example/x\n", encoding="utf-8")

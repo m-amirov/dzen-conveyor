@@ -7,6 +7,7 @@ the correct period; those are editorial-review responsibilities.
 
 import argparse
 from datetime import date
+import hashlib
 import json
 import re
 from pathlib import Path
@@ -120,7 +121,11 @@ def check_images(article_dir: Path, errors: list[str]) -> list[dict]:
     if not isinstance(images, list) or not images:
         errors.append("images: manifest must contain at least one image")
         return []
+    if not 3 <= len(images) <= 4:
+        errors.append("images: expected 3 or 4 illustrations including cover")
     base = article_dir.resolve()
+    seen_paths: set[str] = set()
+    seen_digests: set[str] = set()
     for index, image in enumerate(images, 1):
         label = f"image {index}"
         if not isinstance(image, dict):
@@ -130,6 +135,9 @@ def check_images(article_dir: Path, errors: list[str]) -> list[dict]:
         if not isinstance(relative, str) or not relative.startswith("images/"):
             errors.append(f"{label}: image path must be under images/")
             continue
+        if relative in seen_paths:
+            errors.append("images: duplicate image path")
+        seen_paths.add(relative)
         path = (article_dir / relative).resolve()
         if not path.is_relative_to(base / "images"):
             errors.append(f"{label}: image path escapes article directory")
@@ -139,6 +147,10 @@ def check_images(article_dir: Path, errors: list[str]) -> list[dict]:
         if not path.is_file() or path.stat().st_size < 12:
             errors.append(f"{label}: image file missing or empty")
         else:
+            digest = hashlib.sha256(path.read_bytes()).hexdigest()
+            if digest in seen_digests:
+                errors.append("images: duplicate image content")
+            seen_digests.add(digest)
             with path.open("rb") as image_file:
                 header = image_file.read(12)
             if not any(header.startswith(prefix) for prefix in IMAGE_SIGNATURES.get(path.suffix.lower(), ())):
@@ -209,9 +221,9 @@ def check_publication(draft: str, publish: str, images: list[dict], errors: list
     # merely hidden in an HTML comment elsewhere in the publication.
     cover_lines = [line.strip() for line in prefix.splitlines() if line.strip()]
     expected_images = [item for item in images if isinstance(item, dict)]
-    if len(cover_lines) != 2 * len(expected_images):
+    if len(cover_lines) != 2:
         errors.append("publish: unexpected cover content or missing image reference/caption")
-    for index, image in enumerate(expected_images):
+    for index, image in enumerate(expected_images[:1]):
         path = image.get("path")
         caption = image.get("caption")
         link = cover_lines[2 * index] if len(cover_lines) > 2 * index else ""
@@ -220,6 +232,37 @@ def check_publication(draft: str, publish: str, images: list[dict], errors: list
             errors.append(f"publish: missing image reference {path}")
         if not isinstance(caption, str) or visible_caption != caption:
             errors.append(f"publish: missing image caption for {path}")
+
+    # Only the cover precedes the article. Remaining illustrations must be
+    # embedded in the approved reader copy, each with its own visible caption.
+    draft_lines = draft.splitlines()
+    inline_section_indices: list[int] = []
+    for image in expected_images[1:]:
+        path = image.get("path")
+        caption = image.get("caption")
+        if not isinstance(path, str):
+            continue
+        image_line = re.compile(r"!\[[^\]\n]+\]\(" + re.escape(path) + r"\)")
+        indices = [index for index, line in enumerate(draft_lines) if image_line.fullmatch(line.strip())]
+        if len(indices) != 1:
+            errors.append(f"publish: missing inline image reference {path}")
+            continue
+        index = indices[0]
+        next_line = draft_lines[index + 1].strip("*_ ") if index + 1 < len(draft_lines) else ""
+        if not isinstance(caption, str) or next_line != caption:
+            errors.append(f"publish: missing inline image caption for {path}")
+        previous_sections = [i for i, line in enumerate(draft_lines[:index]) if line.startswith("## ")]
+        if not previous_sections or not any(line.strip() and not line.startswith("#") for line in draft_lines[index + 2:]):
+            errors.append(f"publish: inline image not inside article sections {path}")
+        else:
+            inline_section_indices.append(previous_sections[-1])
+
+    if len(inline_section_indices) != len(set(inline_section_indices)):
+        errors.append("publish: inline images not distributed across sections")
+    expected_paths = [image.get("path") for image in expected_images[1:]]
+    all_inline_links = re.findall(r"!\[[^\]\n]+\]\(([^)\n]+)\)", draft)
+    if sorted(all_inline_links) != sorted(path for path in expected_paths if isinstance(path, str)):
+        errors.append("publish: undeclared or repeated inline image")
 
     parts = suffix.strip().split(POLICY_MARKER)
     if len(parts) != 2:
