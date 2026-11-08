@@ -35,11 +35,11 @@ class PackageContractTests(unittest.TestCase):
             + "\n\n## Важные детали\n\n"
             + "В статье исследуется бытовой контекст. " * 35
             + "\n\n![Деталь посуды](images/detail-one.png)\n"
-            + "*Иллюстрация, созданная с помощью ИИ: крупный план посуды.*\n\n"
+            + "*Фарфоровая чашка с блюдцем — деталь праздничного сервиза.*\n\n"
             + "## Вещь и память\n\n"
             + "В статье исследуется бытовой контекст. " * 35
             + "\n\n![Праздничная сервировка](images/detail-two.png)\n"
-            + "*Иллюстрация, созданная с помощью ИИ: праздничный стол.*\n\n"
+            + "*Чайный стол, накрытый к семейному празднику. Художественная иллюстрация.*\n\n"
             + "В статье исследуется бытовой контекст. " * 10
         )
         (self.article / "draft.md").write_text(
@@ -59,7 +59,7 @@ class PackageContractTests(unittest.TestCase):
             "images": [{
                 "path": "images/cover.png",
                 "kind": "ai_illustration",
-                "caption": "Иллюстрация, созданная с помощью ИИ",
+                "caption": "Фарфоровый сервиз за стеклом серванта. Художественная иллюстрация.",
                 "prompt": "An old porcelain tea set",
                 "rights": "ai_generated",
                 "checked": True,
@@ -67,7 +67,7 @@ class PackageContractTests(unittest.TestCase):
             }, {
                 "path": "images/detail-one.png",
                 "kind": "ai_illustration",
-                "caption": "Иллюстрация, созданная с помощью ИИ: крупный план посуды.",
+                "caption": "Фарфоровая чашка с блюдцем — деталь праздничного сервиза.",
                 "prompt": "Close-up of porcelain",
                 "rights": "ai_generated",
                 "checked": True,
@@ -75,7 +75,7 @@ class PackageContractTests(unittest.TestCase):
             }, {
                 "path": "images/detail-two.png",
                 "kind": "ai_illustration",
-                "caption": "Иллюстрация, созданная с помощью ИИ: праздничный стол.",
+                "caption": "Чайный стол, накрытый к семейному празднику. Художественная иллюстрация.",
                 "prompt": "Tea party table",
                 "rights": "ai_generated",
                 "checked": True,
@@ -84,11 +84,11 @@ class PackageContractTests(unittest.TestCase):
         }
         self.write_json(images / "manifest.json", self.images_manifest)
         (self.article / "publish.md").write_text(
-            "![Обложка](images/cover.png)\nИллюстрация, созданная с помощью ИИ\n\n"
+            "![Обложка](images/cover.png)\nФарфоровый сервиз за стеклом серванта. Художественная иллюстрация.\n\n"
             "<!-- APPROVED_ARTICLE_START -->\n" + article_text + "\n<!-- APPROVED_ARTICLE_END -->\n"
             "\n<!-- DZEN_POLICY_RISK: AI_GENERATED_TEXT -->\n"
             "## Происхождение и ограничения\n"
-            "Текст полностью создан с помощью ИИ. Требования Дзена могут запрещать такие тексты, "
+            "Текст и иллюстрации полностью созданы с помощью ИИ. Требования Дзена могут запрещать такие тексты, "
             "и публикация, модерация и монетизация не гарантированы.\n",
             encoding="utf-8",
         )
@@ -117,6 +117,44 @@ class PackageContractTests(unittest.TestCase):
     def test_valid_package(self):
         self.assertEqual([], validate_package(self.article))
 
+    def test_accepts_descriptive_image_captions_without_ai_wording(self):
+        captions = (
+            "Фарфоровый сервиз в стеклянном шкафу. Художественная иллюстрация.",
+            "Фарфоровая чашка с блюдцем: детали праздничной посуды.",
+            "Чайный стол для семейного праздника. Художественная иллюстрация.",
+        )
+        replacements = []
+        for image, caption in zip(self.images_manifest["images"], captions):
+            old = image["caption"]
+            image["caption"] = caption
+            replacements.append((old, caption))
+        for filename in ("draft.md", "publish.md"):
+            path = self.article / filename
+            content = path.read_text(encoding="utf-8")
+            for old, new in sorted(replacements, key=lambda pair: len(pair[0]), reverse=True):
+                content = content.replace(old, new)
+            path.write_text(content, encoding="utf-8")
+        self.write_json(self.article / "images" / "manifest.json", self.images_manifest)
+        self.assertEqual([], validate_package(self.article))
+
+    def test_rejects_ai_generation_language_in_visible_caption(self):
+        self.images_manifest["images"][0]["caption"] = "Иллюстрация, созданная с помощью ИИ"
+        self.write_json(self.article / "images" / "manifest.json", self.images_manifest)
+        path = self.article / "publish.md"
+        path.write_text(path.read_text(encoding="utf-8").replace(
+            "Фарфоровый сервиз за стеклом серванта. Художественная иллюстрация.",
+            "Иллюстрация, созданная с помощью ИИ",
+        ), encoding="utf-8")
+        self.assertIn("image 1: AI generation wording in reader caption", self.check_errors())
+
+    def test_requires_single_disclosure_covering_text_and_images(self):
+        path = self.article / "publish.md"
+        path.write_text(path.read_text(encoding="utf-8").replace(
+            "Текст и иллюстрации полностью созданы с помощью ИИ.",
+            "Текст полностью создан с помощью ИИ.",
+        ), encoding="utf-8")
+        self.assertIn("policy: complete visible AI/platform disclosure missing", self.check_errors())
+
     def test_rejects_article_with_only_one_image(self):
         self.images_manifest["images"] = self.images_manifest["images"][:1]
         self.write_json(self.article / "images" / "manifest.json", self.images_manifest)
@@ -135,14 +173,14 @@ class PackageContractTests(unittest.TestCase):
         Image.new("RGB", (16, 16), color=(130, 110, 180)).save(self.article / "images" / "extra.png")
         self.images_manifest["images"].append({
             "path": "images/extra.png", "kind": "ai_illustration",
-            "caption": "Иллюстрация, созданная с помощью ИИ: другой сюжет.",
+            "caption": "Ещё один предмет повседневности в историческом контексте.",
             "prompt": "Another distinct historical detail", "rights": "ai_generated",
             "checked": True, "historical_check": "PASS",
         })
         self.write_json(self.article / "images" / "manifest.json", self.images_manifest)
         addition = ("\n\n## Третий сюжет\n\nДругая подтверждённая деталь.\n\n"
                     "![Другой сюжет](images/extra.png)\n"
-                    "*Иллюстрация, созданная с помощью ИИ: другой сюжет.*\n\n"
+                    "*Ещё один предмет повседневности в историческом контексте.*\n\n"
                     "Вывод с новой мыслью.")
         draft = self.article / "draft.md"
         draft.write_text(draft.read_text(encoding="utf-8") + addition, encoding="utf-8")
@@ -163,7 +201,7 @@ class PackageContractTests(unittest.TestCase):
 
     def test_rejects_inline_illustration_caption_mismatch(self):
         path = self.article / "draft.md"
-        path.write_text(path.read_text(encoding="utf-8").replace("*Иллюстрация, созданная с помощью ИИ: праздничный стол.*", "*Подлинная фотография.*"), encoding="utf-8")
+        path.write_text(path.read_text(encoding="utf-8").replace("*Чайный стол, накрытый к семейному празднику. Художественная иллюстрация.*", "*Подлинная фотография.*"), encoding="utf-8")
         self.assertIn("publish: missing inline image caption for images/detail-two.png", self.check_errors())
 
     def test_rejects_inline_illustrations_clustered_in_one_section(self):
@@ -279,7 +317,7 @@ class PackageContractTests(unittest.TestCase):
     def test_rejects_image_caption_mismatch_in_publication(self):
         path = self.article / "publish.md"
         path.write_text(
-            path.read_text(encoding="utf-8").replace("Иллюстрация, созданная с помощью ИИ", "Старинная фотография"),
+            path.read_text(encoding="utf-8").replace("Фарфоровый сервиз за стеклом серванта. Художественная иллюстрация.", "Старинная фотография"),
             encoding="utf-8",
         )
         self.assertIn("publish: missing image caption", self.check_errors())
@@ -287,8 +325,8 @@ class PackageContractTests(unittest.TestCase):
     def test_rejects_fake_visible_caption_with_real_caption_hidden(self):
         path = self.article / "publish.md"
         published = path.read_text(encoding="utf-8").replace(
-            "Иллюстрация, созданная с помощью ИИ\n\n<!-- APPROVED_ARTICLE_START -->",
-            "Подлинный снимок из семейного архива\n\n<!-- Иллюстрация, созданная с помощью ИИ -->\n<!-- APPROVED_ARTICLE_START -->",
+            "Фарфоровый сервиз за стеклом серванта. Художественная иллюстрация.\n\n<!-- APPROVED_ARTICLE_START -->",
+            "Подлинный снимок из семейного архива\n\n<!-- Фарфоровый сервиз за стеклом серванта. Художественная иллюстрация. -->\n<!-- APPROVED_ARTICLE_START -->",
         )
         path.write_text(published, encoding="utf-8")
         self.assertIn("publish: missing image caption", self.check_errors())
@@ -311,6 +349,25 @@ class PackageContractTests(unittest.TestCase):
                 self.assertIn(f"{filename.split('.')[0]}: source list in reader text", self.check_errors())
                 path.write_text(original, encoding="utf-8")
 
+    def test_rejects_markdown_source_headings_with_colon_in_both_reader_files(self):
+        for heading in ("## Источники:", "### Список источников:", "## Ссылки на источники:"):
+            with self.subTest(heading=heading):
+                appendix = f"\n\n{heading}\n- [Музей](https://museum.example/collection)\n"
+                draft = self.article / "draft.md"
+                publish = self.article / "publish.md"
+                original_draft = draft.read_text(encoding="utf-8")
+                original_publish = publish.read_text(encoding="utf-8")
+                draft.write_text(original_draft + appendix, encoding="utf-8")
+                publish.write_text(
+                    original_publish.replace(original_draft, original_draft + appendix),
+                    encoding="utf-8",
+                )
+                errors = self.check_errors()
+                self.assertIn("draft: source list in reader text", errors)
+                self.assertIn("publish: source list in reader text", errors)
+                draft.write_text(original_draft, encoding="utf-8")
+                publish.write_text(original_publish, encoding="utf-8")
+
     def test_rejects_internal_filename_in_reader_text(self):
         path = self.article / "draft.md"
         path.write_text(path.read_text(encoding="utf-8") + "\nСсылки приведены в `sources.md`.\n", encoding="utf-8")
@@ -325,10 +382,10 @@ class PackageContractTests(unittest.TestCase):
         (self.article / "images" / "cover.png").write_bytes(b"\x89PNG\r\n\x1a\nXXXX")
         self.assertIn("image 1: cannot decode image", self.check_errors())
 
-    def test_rejects_fake_archival_caption_even_with_ii_letters(self):
+    def test_rejects_fake_archival_caption(self):
         self.images_manifest["images"][0]["caption"] = "Иллюстрации из архива: подлинный снимок"
         self.write_json(self.article / "images" / "manifest.json", self.images_manifest)
-        self.assertIn("AI illustration disclosure missing", self.check_errors())
+        self.assertIn("misleading claim of archival authenticity", self.check_errors())
 
     def test_rejects_non_string_image_caption_without_exception(self):
         self.images_manifest["images"][0]["caption"] = 42

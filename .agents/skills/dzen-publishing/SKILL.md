@@ -23,11 +23,11 @@ Read the article's real `brief.md`, `sources.md`, `claims.md`, `draft.md`, `revi
 
    ```text
    ## Происхождение и ограничения
-   Текст полностью создан с помощью ИИ. Требования Дзена могут запрещать такие тексты, и публикация, модерация и монетизация не гарантированы.
+   Текст и иллюстрации полностью созданы с помощью ИИ. Требования Дзена могут запрещать такие тексты, и публикация, модерация и монетизация не гарантированы.
    ```
 
    No other unreviewed prose belongs outside the approved article block. Neither `draft.md` nor `publish.md` may contain internal `[S#]` or `[C#]` codes, an `Источники:` footer, or references to internal `sources.md` / `claims.md` filenames. If new text is necessary, revise and reapprove `draft.md` first.
-3. Require **3–4 unique, checked images overall** (cover + 2–3 inline, distributed across different article sections). Create `manifest.json` with `schema_version: 1`, `generation: "fully_ai_generated"`, `status: "PACKAGED"`, non-empty `title`, `source_gate: "PASS"`, `editorial_gate: "PASS"`, `image_gate: "PASS"`, `policy_risk_acknowledged: true`, `publication_status: "NOT_PUBLISHED"`, `moderation_status: "NOT_CHECKED"`, `monetization_status: "NOT_VERIFIED"`. These are local package assessments, **not** proof of platform approval.
+3. Require **3–4 unique, checked images overall** (cover + 2–3 inline, distributed across different article sections). Every image caption must be informative and free of AI-generation formulas; keep the single collective AI disclosure above. Create `manifest.json` with `schema_version: 1`, `generation: "fully_ai_generated"`, `status: "PACKAGED"`, non-empty `title`, `source_gate: "PASS"`, `editorial_gate: "PASS"`, `image_gate: "PASS"`, `policy_risk_acknowledged: true`, `publication_status: "NOT_PUBLISHED"`, `moderation_status: "NOT_CHECKED"`, `monetization_status: "NOT_VERIFIED"`. These are local package assessments, **not** proof of platform approval.
 4. Run `python3 scripts/validate_package.py editorial/articles/<slug>` against the **actual** article directory. If it fails, repair the concrete package defect or set `status: "BLOCKED"` and document the reason. Do not report a green result from reading a hypothetical file or from a successful test on another article.
 5. Provide the absolute local package path and the validator's real exit status. Leave `publication_status: NOT_PUBLISHED`, `moderation_status: NOT_CHECKED` and `monetization_status: NOT_VERIFIED` in any user-facing status report.
 

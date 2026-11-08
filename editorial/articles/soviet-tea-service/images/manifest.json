@@ -3,7 +3,7 @@
     {
       "path": "images/servant-with-porcelain.webp",
       "kind": "ai_reconstruction",
-      "caption": "Визуальная реконструкция, созданная с помощью ИИ: обобщённая советская гостиная рубежа 1960–1970-х годов. Не архивная фотография конкретной квартиры.",
+      "caption": "Парадный чайный сервиз за стеклом серванта в советской квартире конца 1960-х годов. Художественная реконструкция.",
       "prompt": "Use case: historical-scene. Landscape editorial cover illustration for a Russian cultural-history article about beautiful tea services behind glass in Soviet apartments. A modest Soviet urban apartment living room in the late 1960s / early 1970s; compact dark-wood sideboard with glass-fronted shelves displaying a coordinated white porcelain tea service with restrained floral decoration, teapot, cups, saucers, sugar bowl and milk jug; nearby a plain everyday drinking cup on a table. Sophisticated hand-painted editorial gouache and restrained oil-brush texture, natural daylight, cream paper, muted terracotta, blue-green and wood tones; intimate horizontal 3:2 composition. Historically plausible furniture and objects; no modern electronics or smartphones, no readable text, logos, watermarks, fake archival borders, identified individuals or propaganda stereotypes. Painterly, not a photograph.",
       "rights": "Original AI-generated illustration created with built-in OpenAI image generation, no third-party input photographs supplied; verify applicable service and platform terms before commercial publication.",
       "checked": true,
@@ -12,7 +12,7 @@
     {
       "path": "images/sectional-living-room.webp",
       "kind": "ai_reconstruction",
-      "caption": "Визуальная реконструкция, созданная с помощью ИИ: обобщённая городская гостиная начала 1960-х с секционной мебелью. Не снимок конкретной квартиры или выставки.",
+      "caption": "Гостиная начала 1960-х: светлая секционная мебель, застеклённый шкаф и посуда на полках. Художественная реконструкция.",
       "prompt": "Use case: historical-scene. Single cohesive natural scene for a Soviet domestic interiors article circa 1960–1962: modest Khrushchev-era apartment with pale light-wood modular sectional cabinet on slender legs, books, vase, glazed compartment with a porcelain tea set, armchair, curtains, parquet floor. Wide horizontal handpainted gouache editorial illustration, muted cream, sage, blue-gray and terracotta, soft daylight. No arrows, labels, collages, text, modern electronics, propaganda emblems or archival-photo claims.",
       "rights": "Original AI-generated illustration created with built-in OpenAI image generation, no third-party reference images supplied; review service and platform terms before commercial publication.",
       "checked": true,
@@ -21,7 +21,7 @@
     {
       "path": "images/family-tea-celebration.webp",
       "kind": "ai_reconstruction",
-      "caption": "Визуальная реконструкция, созданная с помощью ИИ: пример семейного чаепития в советской квартире 1960-х годов. Не изображение реальной семьи.",
+      "caption": "Праздничное чаепитие с фарфоровым сервизом в советской квартире 1960-х годов. Художественная реконструкция.",
       "prompt": "Use case: historical-scene. A modest Soviet family celebration at a dining table around 1965, with a coordinated six-person floral porcelain tea service, tea pastries, sugar bowl, milk jug, teapot and gift wrapping with ribbon set aside. Warm natural light, credible 1960s apartment details, horizontal painterly gouache/oil editorial illustration, muted cream, green, blue and terracotta. No modern devices, text, labels, logos, or false archival claims; one cohesive imagined reconstruction.",
       "rights": "Original AI-generated illustration created with built-in OpenAI image generation, no third-party reference images supplied; review service and platform terms before commercial publication.",
       "checked": true,

@@ -18,11 +18,11 @@ Create a **real checked raster asset**, never merely a prompt. Historical AI sce
 5. In `images/manifest.json`, store each asset in reading order: **cover first, then inline illustrations**. Each asset has its own path, prompt, caption, rights and evidence of review, e.g.:
 
 ```json
-{"images":[{"path":"images/cover.png","kind":"ai_reconstruction","caption":"Визуальная реконструкция, созданная с помощью ИИ","prompt":"...","rights":"ai_generated","checked":true,"historical_check":"PASS"}]}
+{"images":[{"path":"images/cover.png","kind":"ai_reconstruction","caption":"Сервиз в застеклённом серванте советской квартиры. Художественная реконструкция.","prompt":"...","rights":"ai_generated","checked":true,"historical_check":"PASS"}]}
 ```
 
 6. Place each of the 2–3 inline assets into `draft.md` directly after a relevant paragraph **in a different `##` section** using `![Содержательное описание](images/filename.webp)` and the exact caption from its manifest on the next line. Keep at least one paragraph of prose after the final illustration. The publishing skill carries these embeds into the approved article unchanged; only the cover goes before its start marker.
-7. Use `kind: ai_illustration` with caption «Иллюстрация, созданная с помощью ИИ» when a scene is conceptual. Use `kind: ai_reconstruction` and explicit «Визуальная реконструкция» when it represents a historical scene. Distinguish genuine archival sources separately; this MVP does **not** package third-party archival images as generated assets.
+7. Write **natural, specific reader captions** about the depicted people, setting or object, never repetitive «создано ИИ / нейросетью» phrases. Use `kind: ai_illustration` for conceptual illustrations; for `kind: ai_reconstruction` include the plain-language label «Художественная реконструкция» in the caption. Distinguish genuine archival sources separately; this MVP does **not** package third-party archival images as generated assets. The publishing skill provides **one visible overall disclosure** for text and images instead of repeating AI origin under every illustration; keep precise provenance in manifest metadata.
 8. Only set `checked: true` and `historical_check: PASS` after actual inspection. Passing the deterministic file validator proves only artifact structure, not visual truth.
 
 ## Blockers

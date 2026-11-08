@@ -20,7 +20,7 @@ CLAIM_RE = re.compile(r"(?m)^\s*-\s*\[(C\d+)\]\s+(verified|disputed|unverified)\
 SOURCE_REF_RE = re.compile(r"\[(S\d+)\]")
 READER_CITATION_RE = re.compile(r"\[(?:S|C)\d+\]")
 READER_SOURCE_LIST_RE = re.compile(
-    r"(?mi)^\s*(?:#{1,6}\s+(?:источники|ссылки на источники|список источников)\s*$"
+    r"(?mi)^\s*(?:#{1,6}\s+(?:источники|ссылки на источники|список источников)\s*:?\s*$"
     r"|\*\*(?:источники|ссылки на источники|список источников):?\*\*"
     r"|(?:источники|ссылки на источники|список источников):)"
 )
@@ -31,7 +31,7 @@ ARTICLE_END = "<!-- APPROVED_ARTICLE_END -->"
 POLICY_MARKER = "<!-- DZEN_POLICY_RISK: AI_GENERATED_TEXT -->"
 POLICY_NOTICE = (
     "## Происхождение и ограничения\n"
-    "Текст полностью создан с помощью ИИ. Требования Дзена могут запрещать такие тексты, "
+    "Текст и иллюстрации полностью созданы с помощью ИИ. Требования Дзена могут запрещать такие тексты, "
     "и публикация, модерация и монетизация не гарантированы."
 )
 REVIEW_MARKERS = ("VERDICT", "FACT_CHECK", "STYLE_CHECK", "COPYRIGHT_CHECK", "VISUAL_CHECK")
@@ -182,14 +182,13 @@ def check_images(article_dir: Path, errors: list[str]) -> list[dict]:
             errors.append(f"{label}: caption must be a string")
             continue
         caption_lower = caption.lower()
-        ai_disclosed = bool(re.search(r"\bии\b", caption_lower)) and (
-            "создан" in caption_lower or "сгенерирован" in caption_lower
-        )
-        if kind == "ai_reconstruction" and ("реконструкц" not in caption_lower or not ai_disclosed):
-            errors.append(f"{label}: AI reconstruction disclosure missing")
-        elif kind == "ai_illustration" and not ai_disclosed:
-            errors.append(f"{label}: AI illustration disclosure missing")
-        elif kind not in {"ai_reconstruction", "ai_illustration"}:
+        if not caption.strip():
+            errors.append(f"{label}: caption required")
+        if re.search(r"\bии\b|\bai\b|нейросет|сгенерирован|генеративн|искусственн\w* интеллект", caption_lower):
+            errors.append(f"{label}: AI generation wording in reader caption")
+        if kind == "ai_reconstruction" and "реконструкц" not in caption_lower:
+            errors.append(f"{label}: historical reconstruction must be labeled in caption")
+        if kind not in {"ai_reconstruction", "ai_illustration"}:
             errors.append(f"{label}: unsupported image kind")
         if any(term in caption_lower for term in ("архивное фото", "подлинный снимок", "реальное фото", "фотография из архива")):
             errors.append(f"{label}: misleading claim of archival authenticity")
