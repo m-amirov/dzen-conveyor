@@ -1,0 +1,31 @@
+{
+  "images": [
+    {
+      "path": "images/orange-kitchen.webp",
+      "kind": "ai_illustration",
+      "caption": "Запах очищенного апельсина как повод вспомнить давно забытый домашний эпизод. Художественная иллюстрация.",
+      "prompt": "Use case: illustration-story. Landscape cover for 'Люди и время'. Adult woman in a modest contemporary home kitchen slowly peeling an orange over a small white plate, lost in private memory; winter daylight, ceramic mug, curtain, cardigan, wood table. Painterly textured gouache and oil, cream, terracotta, warm gray and slate-blue, close realistic human scene. No ghosts, no letters, no brand, no logo, no watermark. 1536x1024.",
+      "rights": "Original image generated through built-in OpenAI image-generation tool, without third-party photos; verify applicable commercial terms before actual publication.",
+      "checked": true,
+      "historical_check": "PASS"
+    },
+    {
+      "path": "images/odor-and-pictures.webp",
+      "kind": "ai_illustration",
+      "caption": "Сопоставление запаховых и зрительных подсказок в исследовании памяти. Художественная иллюстрация.",
+      "prompt": "Use case: scientific-educational. Conceptual research tabletop, not any actual laboratory. Three believable glass jars with dried citrus peel, cinnamon, coffee beans, plain cards with object pictures, blank notebook, pencil, adult hands. Contemporary interior with natural light, painterly editorial gouache/oil, neutral green-gray ivory terracotta. No legible labels or scientific charts, no logos or watermark. Landscape 1536x1024.",
+      "rights": "Original image generated through built-in OpenAI image-generation tool, no source figures or third-party photographs copied; verify applicable commercial terms before actual publication.",
+      "checked": true,
+      "historical_check": "PASS"
+    },
+    {
+      "path": "images/rainy-hallway.webp",
+      "kind": "ai_illustration",
+      "caption": "Влажная одежда в прихожей: одна и та же бытовая деталь может быть разной подсказкой для памяти. Художественная иллюстрация.",
+      "prompt": "Use case: illustration-story. Timeless apartment entryway after rain, navy wool coat and wet green raincoat on hooks, child's rubber boots, umbrella in pottery stand, rainlit doorway, tiled floor. No people, restrained editorial gouache/oil, dusty green and slate blue, believable fabric details. No dated provenance or claims to be a historic photo, no signs, logos or watermarks. Landscape 1536x1024.",
+      "rights": "Original image generated through built-in OpenAI image-generation tool, without third-party reference photos; verify applicable commercial terms before actual publication.",
+      "checked": true,
+      "historical_check": "PASS"
+    }
+  ]
+}
