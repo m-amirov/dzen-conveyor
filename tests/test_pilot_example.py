@@ -11,6 +11,7 @@ EXAMPLE = Path(__file__).resolve().parents[1] / "examples" / "pilot-portrait"
 SOVIET_SERVICE = Path(__file__).resolve().parents[1] / "editorial" / "articles" / "soviet-tea-service"
 OFFLINE_DATE = Path(__file__).resolve().parents[1] / "editorial" / "articles" / "offline-date"
 VIDEO_HOME = Path(__file__).resolve().parents[1] / "editorial" / "articles" / "video-home"
+ODOR_MEMORY = Path(__file__).resolve().parents[1] / "editorial" / "articles" / "odor-memory"
 
 
 class PilotExampleTests(unittest.TestCase):
@@ -28,6 +29,15 @@ class PilotExampleTests(unittest.TestCase):
 
     def test_video_home_does_not_claim_external_publication(self):
         data = json.loads((VIDEO_HOME / "manifest.json").read_text(encoding="utf-8"))
+        self.assertEqual("NOT_PUBLISHED", data["publication_status"])
+        self.assertEqual("NOT_CHECKED", data["moderation_status"])
+        self.assertEqual("NOT_VERIFIED", data["monetization_status"])
+
+    def test_odor_memory_article_passes_structural_validator(self):
+        self.assertEqual([], validate_package(ODOR_MEMORY))
+
+    def test_odor_memory_does_not_claim_external_publication(self):
+        data = json.loads((ODOR_MEMORY / "manifest.json").read_text(encoding="utf-8"))
         self.assertEqual("NOT_PUBLISHED", data["publication_status"])
         self.assertEqual("NOT_CHECKED", data["moderation_status"])
         self.assertEqual("NOT_VERIFIED", data["monetization_status"])
